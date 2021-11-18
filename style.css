@@ -1,16 +1,16 @@
-h2 {
+h1, h2, h3, h4, h5, h6 {
     color: black;
   }
   
   path {
-    stroke: white;
+    stroke: black;
     stroke-width: 0.5px;
     fill: black;
   }
   
   .state {
     stroke-width: 1;
-    stroke: #ffffff;
+    stroke: #777777;
   }
   
   .state:hover {
@@ -18,44 +18,9 @@ h2 {
     cursor: pointer;
   }
   
-  .slider {
-    -webkit-appearance: none;
-    width: 350px;
-    height: 15px;
-    background: #d3d3d3;
-    outline: none;
-    opacity: 0.7;
-    -webkit-transition: .2s;
-    transition: opacity .2s;
-  }
-  
-  .slider:hover {
-    opacity: 1;
-  }
-  
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 20px;
-    height: 20px;
-    background: darkblue;
-    cursor: pointer;
-  }
-  
-  .slider::-moz-range-thumb {
-    width: 20px;
-    height: 20px;
-    background: #04AA6D;
-    cursor: pointer;
-  }
-  
   body {
     font-family: Arial, sans-serif;
     padding: 10px;
-    /* display: flex; */
-    /* justify-content: left; */
-    /* align-items: left; */
-    /* flex-direction: column; */
   }
   
   p{
