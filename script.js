@@ -13,10 +13,10 @@ let fetchData = async () => {
 
 const width = 800;
 const height = 500;
-const svg = d3.select("body").append("svg")
-.attr("width", width)
-.attr("height", height)
-.append('g');
+const svg = d3.select("#chart").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append('g');
 
 const projection = d3.geoAlbersUsa()
     .translate([width / 2, height / 2]) // translate to center of screen
@@ -25,7 +25,7 @@ const projection = d3.geoAlbersUsa()
 const path = d3.geoPath().projection(projection);
 
 //create tooltip
-const tooltip = d3.select("body").append("div")
+const tooltip = d3.select("#chart").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
     
@@ -69,6 +69,14 @@ d3.csv("bystate_fromcz_rounded.csv", function(data) {
             .style("fill", function(d) { 
                 return ramp(d[theil]);
             })
+        
+        //adding graph title
+        // svg.append("text")
+        //     .attr("x", (width / 2))             
+        //     .attr("y", 20)
+        //     .attr("text-anchor", "middle")  
+        //     .style("font-size", "15px") 
+        //     .text("US Economic Inequality Hot Spot - Using Theil Index")
 
         //adding hover interactions
         .on('mousemove', function (d) {
@@ -119,8 +127,8 @@ d3.csv("bystate_fromcz_rounded.csv", function(data) {
         //     .attr('color','darkgray')
 
         //legend
-        var w = 100, h = 400;
-        var key = d3.select("body")
+        var w = 100, h = 480;
+        var key = d3.select("#chart")
             .append("svg")
             .attr("width", w)
             .attr("height", h)
