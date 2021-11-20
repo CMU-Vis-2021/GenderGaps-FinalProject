@@ -164,54 +164,89 @@ d3.csv("bystate_fromcz.csv", function(data) {
 
 
 
-//line chat 
-//code from https://www.d3-graph-gallery.com/graph/line_basic.html
-    // set the dimensions and margins of the graph
-var margin = {top: 10, right: 30, bottom: 30, left: 60},
-width = 460 - margin.left - margin.right,
-height = 400 - margin.top - margin.bottom;
+// //line chart 
+// //code from https://www.d3-graph-gallery.com/graph/line_basic.html
+//     // set the dimensions and margins of the graph
+var margin = {top: 30, right: 30, bottom: 30, left: 60},
+Lwidth = 460 - margin.left - margin.right,
+Lheight = 400 - margin.top - margin.bottom;
 
-// append the svg object to the body of the page
-var svg = d3.select("#linechart")
+// // append the svg object to the body of the page
+var Lsvg = d3.select("#linechart")
 .append("svg")
-.attr("width", width + margin.left + margin.right)
-.attr("height", height + margin.top + margin.bottom)
+.attr("width", Lwidth + margin.left + margin.right)
+.attr("height", Lheight + margin.top + margin.bottom)
 .append("g")
 .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
 
-//Read the data
+      var labelx = 'Parent Income Percentile';
+
+// //Read the data
 d3.csv("gender_nat.csv", function(data){
-// When reading the csv, I must format variables:
+// // When reading the csv, I must format variables:
 // function(d){
 // return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
 // },
 
-// Add X axis --> it is a date format
-var x = d3.scaleTime()
-  .domain(d3.extent(data, function(d) { return d.par_pctile; }))
-  .range([ 0, width ]);
-svg.append("g")
-  .attr("transform", "translate(0," + height + ")")
+// // Add X axis --> it is a date format
+var x = d3.scaleLinear()
+.domain([0,100])
+//   .domain(d3.extent(data, function(d) { return d.par_pctile; }))
+  .range([ 0, Lwidth ]);
+Lsvg.append("g")
+  .attr("transform", "translate(0," + Lheight + ")")
   .call(d3.axisBottom(x));
 
-// Add Y axis
+// // Add Y axis
 var y = d3.scaleLinear()
-  .domain([0, d3.max(data, function(d) { return +d.value; })])
-  .range([ height, 0 ]);
-svg.append("g")
+  .domain([0, d3.max(data, function(d) { return +d.w2wages_30_m; })])
+  .range([ Lheight, 0 ]);
+Lsvg.append("g")
   .call(d3.axisLeft(y));
 
-// Add the line
-svg.append("path")
+// // Add the line
+Lsvg.append("path")
   .datum(data)
-  .attr("fill", "none")
-  .attr("stroke", "steelblue")
-  .attr("stroke-width", 1.5)
+  .style("fill", "none")
+  .style("stroke", "steelblue")
+  .style("stroke-width", 2)
   .attr("d", d3.line()
-    .x(function(d) { return x(d.date) })
-    .y(function(d) { return y(d.value) })
+    .x(function(d) { return x(d.par_pctile) })
+    .y(function(d) { return y(d.w2wages_30_m) })
     )
 
+Lsvg.append("path")
+    .datum(data)
+    .style("fill", "none")
+    .style("stroke", "pink")
+    .style("stroke-width", 2)
+    .attr("d", d3.line()
+      .x(function(d) { return x(d.par_pctile) })
+      .y(function(d) { return y(d.w2wages_30_f) })
+      )
 
-)}
+Lsvg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", Lwidth - 110)
+    .attr("y", Lheight + 30)
+    .text("Parent Income Percentile");
+
+Lsvg.append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "end")
+    .attr("y", -60)
+    .attr("x", -120)
+    .attr("dy", ".75em")
+    .attr("transform", "rotate(-90)")
+    .text("Wages");
+
+Lsvg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("y", Lheight - 350)
+    .attr("x", Lwidth+ 10)
+    .text("Average Wages of 30 year olds from Varying Parent Income Percentiles");
+
+})
