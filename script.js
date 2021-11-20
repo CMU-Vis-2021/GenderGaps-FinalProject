@@ -7,9 +7,9 @@ let fetchData = async () => {
     return response.json();
 };
 
-Number.prototype.round = function (decimals) {
-return Number((Math.round(this + "e" + decimals) + "e-" + decimals));
-};
+// Number.prototype.round = function (decimals) {
+// return Number((Math.round(this + "e" + decimals) + "e-" + decimals));
+// };
 
 const width = 800;
 const height = 500;
@@ -29,19 +29,20 @@ const tooltip = d3.select("body").append("div")
         .attr("class", "tooltip")
         .style("opacity", 0);
     
-d3.csv("bystate_fromcz.csv", function(data) {
-    var gradRate = 'gradrate_r';
+d3.csv("bystate_fromcz_rounded.csv", function(data) {
+    //grab the variable theil index - used to measure economic inequality
+    var theil = 'cs_race_theil_2000';
 
-    //set colors 
-    lowColor = '#EBF5FB';
-    highColor = '#2874A6';
+    //set colors - the darker the red, the more inequality there are
+    lowColor = '#ffffff';
+    highColor = '#c43333';
 
     //get grad rate min and max
     let max = d3.max(data, function (d, i) {
-        return d[gradRate];
+        return d[theil];
     });
     let min = d3.min(data, function (d, i) {
-        return d[gradRate];
+        return d[theil];
     });
 
     //color ramp
@@ -66,7 +67,7 @@ d3.csv("bystate_fromcz.csv", function(data) {
             .style('transition', "all 0.2s ease-in-out")
             .attr('class', 'state')
             .style("fill", function(d) { 
-                return ramp(d[gradRate]);
+                return ramp(d[theil]);
             })
 
         //adding hover interactions
@@ -74,50 +75,51 @@ d3.csv("bystate_fromcz.csv", function(data) {
             tooltip.transition()
                 .duration(200)
                 .style("opacity", .9);
-
             tooltip.style("left", (d3.event.pageX) + "px")
                 .style("top", (d3.event.pageY) + "px")
-                .text(()=> `${d.state_id}: ${(d[gradRate])}%`)  
+                .text(()=> `${d.state_id}'s Theil Index : ${(d[theil])}`)  
         })
 
-        //see this
         .on("mouseover", function (d) {
             d3.select(this)
-                .style("fill", tinycolor(ramp(d[gradRate])).darken(25).toString())
+                .style("opacity", 1)    
+                .style("fill", tinycolor(ramp(d[theil])).darken(25).toString())
                 .style("cursor", "pointer")
         })
 
         .on("mouseout", function (d, i) {
+            d3.selectAll(".state")
+                .transition()
+                .duration(100)
+                .style("opacity", 1)
             d3.select(this).style("fill", function (d) {
-                return ramp(d[gradRate]);
+                return ramp(d[theil]);
             });
             tooltip.transition()
-                .duration(500)
+                .duration(200)
                 .style("opacity", 0)
-            d3.selectAll(".label")
-                .text("")
         });
 
         //state abbr
-        svg.selectAll("text")
-            .data(uState.features)
-            .enter()
-            .append("svg:text")
-            .text(function(d){
-                return d.state_id;
-            })
-            .attr("x", function(d){
-                return path.centroid(d)[0];
-            })
-            .attr("y", function(d){
-                return  path.centroid(d)[1];
-            })
-            .attr("text-anchor","middle")
-            .attr('font-size','5pt')
-            .attr('color','darkgray')
+        // svg.selectAll("text")
+        //     .data(uState.features)
+        //     .enter()
+        //     .append("svg:text")
+        //     .text(function(d){
+        //         return d.state_id;
+        //     })
+        //     .attr("x", function(d){
+        //         return path.centroid(d)[0];
+        //     })
+        //     .attr("y", function(d){
+        //         return  path.centroid(d)[1];
+        //     })
+        //     .attr("text-anchor","middle")
+        //     .attr('font-size','6pt')
+        //     .attr('color','darkgray')
 
         //legend
-        var w = 100, h = 300;
+        var w = 100, h = 400;
         var key = d3.select("body")
             .append("svg")
             .attr("width", w)
@@ -144,8 +146,8 @@ d3.csv("bystate_fromcz.csv", function(data) {
             .attr("stop-opacity", 1);
 
         key.append("rect")
-            .attr("width", w - 75)
-            .attr("height", h)
+            .attr("width", w - 80)
+            .attr("height", h+20)
             .style("fill", "url(#gradient)")
             .attr("transform", "translate(0,10)");
 
@@ -168,14 +170,14 @@ d3.csv("bystate_fromcz.csv", function(data) {
 //code from https://www.d3-graph-gallery.com/graph/line_basic.html
     // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
-width = 460 - margin.left - margin.right,
-height = 400 - margin.top - margin.bottom;
+LineChartwidth = 460 - margin.left - margin.right,
+LineChartheight = 400 - margin.top - margin.bottom;
 
 // append the svg object to the body of the page
-var svg = d3.select("#linechart")
+var linesvg = d3.select("#linechart")
 .append("svg")
-.attr("width", width + margin.left + margin.right)
-.attr("height", height + margin.top + margin.bottom)
+.attr("width", LineChartwidth + margin.left + margin.right)
+.attr("height", LineChartheight + margin.top + margin.bottom)
 .append("g")
 .attr("transform",
       "translate(" + margin.left + "," + margin.top + ")");
@@ -190,20 +192,20 @@ d3.csv("gender_nat.csv", function(data){
 // Add X axis --> it is a date format
 var x = d3.scaleTime()
   .domain(d3.extent(data, function(d) { return d.par_pctile; }))
-  .range([ 0, width ]);
-svg.append("g")
-  .attr("transform", "translate(0," + height + ")")
+  .range([ 0, LineChartwidth ]);
+linesvg.append("g")
+  .attr("transform", "translate(0," + LineChartheight + ")")
   .call(d3.axisBottom(x));
 
 // Add Y axis
 var y = d3.scaleLinear()
-  .domain([0, d3.max(data, function(d) { return +d.value; })])
-  .range([ height, 0 ]);
-svg.append("g")
+  .domain([0, d3.max(data, function(d) { return +d.value;})])
+  .range([ LineChartheight, 0 ]);
+  linesvg.append("g")
   .call(d3.axisLeft(y));
 
 // Add the line
-svg.append("path")
+linesvg.append("path")
   .datum(data)
   .attr("fill", "none")
   .attr("stroke", "steelblue")
@@ -212,6 +214,4 @@ svg.append("path")
     .x(function(d) { return x(d.date) })
     .y(function(d) { return y(d.value) })
     )
-
-
-)}
+})
