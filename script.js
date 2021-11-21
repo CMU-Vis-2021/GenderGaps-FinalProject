@@ -80,7 +80,7 @@ d3.csv("bystate_fromcz.csv", function(data) {
                 .text(()=> `${d.state_id}: ${(d[gradRate])}%`)  
         })
 
-        //see this
+        //see this  
         .on("mouseover", function (d) {
             d3.select(this)
                 .style("fill", tinycolor(ramp(d[gradRate])).darken(25).toString())
