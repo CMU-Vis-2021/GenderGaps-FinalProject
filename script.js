@@ -66,17 +66,7 @@ d3.csv("bystate_fromcz_rounded.csv", function(data) {
             .attr("d", path)
             .style('transition', "all 0.2s ease-in-out")
             .attr('class', 'state')
-            .style("fill", function(d) { 
-                return ramp(d[theil]);
-            })
-        
-        //adding graph title
-        // svg.append("text")
-        //     .attr("x", (width / 2))             
-        //     .attr("y", 20)
-        //     .attr("text-anchor", "middle")  
-        //     .style("font-size", "15px") 
-        //     .text("US Economic Inequality Hot Spot - Using Theil Index")
+            .style('fill','rgb(230, 230, 230)')
 
         //adding hover interactions
         .on('mousemove', function (d) {
@@ -108,6 +98,39 @@ d3.csv("bystate_fromcz_rounded.csv", function(data) {
                 .duration(200)
                 .style("opacity", 0)
         });
+        
+
+        //get the correct porportion for population size
+        var radius = d3.scaleSqrt()
+            .domain([0, 1e6])
+            .range([0, 6]);
+
+        //adding bubble
+        svg.append("g")
+            .attr("class", "bubble")
+            .selectAll("circle")
+            .data(uState.features)
+            .enter().append("circle")
+            .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
+
+        document.getElementById("theil").onclick = function(){
+            console.log('show Choropleth');
+            d3.selectAll('path')
+            .style("fill", function(d) { 
+                return ramp(d[theil]);
+            })
+        }
+        
+        document.getElementById("state_pop").onclick = function(){
+            console.log('show bubble map');
+            d3.selectAll("circle")
+            .attr("fill","rgba(0, 0, 0, 0.4)")
+            .attr("stroke","rgba(0,0,0,0.2)")
+            .attr("stroke-width","0.5px")
+            .attr("r", function (d) {
+                    return radius(d.pop2000);
+                });
+        }
 
         //state abbr
         // svg.selectAll("text")

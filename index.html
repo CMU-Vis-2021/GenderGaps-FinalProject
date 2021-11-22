@@ -14,16 +14,19 @@
     <h1>Childhood Environment and Gender Gaps in Adulthood</h1>
     <h5>By Tammy Zhou, Priya Jain, Alana Mittleman, and Rob Lambeth</h5> 
     <h5>Data Visualization Final Project @CMU 2021</h5>
-    
+
     <div id="vis">
         <h4>US Map of regional economic inequality and gender gap</h4>
         <p>The <b>Theil index </b>is a statistic used to measure economic inequality. The Theil index measures an entropic "distance" the population is away from the "ideal" egalitarian state of everyone having the same income. 
             The numerical result is in terms of negative entropy so that a higher number indicates more order that is further away from the "ideal" of maximum disorder. 
             Formulating the index to represent negative entropy instead of entropy allows it to be a measure of inequality rather than equality.</p>
+        <button id="theil" class="button">Show Economic Inqueality (Choropleth)</button>
+        <button id="state_pop" class="button">Show State population (Bubble Map)</button>
         <div id = "chart"></div>
     </div>
+    <br><br><br><br>
     <div id = "linechart"></div>
-    <script src="script.js"></script>
     
+    <script src="script.js" defer></script>
 </body>
 </html>
