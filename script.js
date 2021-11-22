@@ -1,28 +1,27 @@
 let fetchData = async () => {
-    //I've handily uploaded the data to this site for easy reference.
-    let url = "https://api.myjson.com/bins/cgbm8";
-    //'fetch()' returns a promise
-    let response = await fetch(url);
-    //'json()' also returns a promise
-    return response.json();
-};
+  //I've handily uploaded the data to this site for easy reference.
+  let url = "https://api.myjson.com/bins/cgbm8"
+  //'fetch()' returns a promise
+  let response = await fetch(url)
+  //'json()' also returns a promise
+  return response.json()
+}
 
-// Number.prototype.round = function (decimals) {
-// return Number((Math.round(this + "e" + decimals) + "e-" + decimals));
-// };
+const width = 800
+const height = 500
+const svg = d3
+  .select("#chart")
+  .append("svg")
+  .attr("width", width)
+  .attr("height", height)
+  .append("g")
 
-const width = 800;
-const height = 500;
-const svg = d3.select("#chart").append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append('g');
+const projection = d3
+  .geoAlbersUsa()
+  .translate([width / 2, height / 2]) // translate to center of screen
+  .scale([1000]) // scale things down so see entire US
 
-const projection = d3.geoAlbersUsa()
-    .translate([width / 2, height / 2]) // translate to center of screen
-    .scale([1000]); // scale things down so see entire US
-
-const path = d3.geoPath().projection(projection);
+const path = d3.geoPath().projection(projection)
 
 //create tooltip
 const tooltip = d3.select("#chart").append("div")
@@ -69,21 +68,20 @@ d3.csv("bystate_fromcz_rounded.csv", function(data) {
             .style('fill','rgb(230, 230, 230)')
 
         //adding hover interactions
-        .on('mousemove', function (d) {
-            tooltip.transition()
-                .duration(200)
-                .style("opacity", .9);
-            tooltip.style("left", (d3.event.pageX) + "px")
-                .style("top", (d3.event.pageY) + "px")
-                .text(()=> `${d.state_id}'s Theil Index : ${(d[theil])}`)  
+        .on("mousemove", function (d) {
+          tooltip.transition().duration(200).style("opacity", 0.9)
+          tooltip
+            .style("left", d3.event.pageX + "px")
+            .style("top", d3.event.pageY + "px")
+            .text(() => `${d.state_id}'s Theil Index : ${d[theil]}`)
         })
 
-        //see this  
+        //see this
         .on("mouseover", function (d) {
-            d3.select(this)
-                .style("opacity", 1)    
-                .style("fill", tinycolor(ramp(d[theil])).darken(25).toString())
-                .style("cursor", "pointer")
+          d3.select(this)
+            .style("opacity", 1)
+            .style("fill", tinycolor(ramp(d[theil])).darken(25).toString())
+            .style("cursor", "pointer")
         })
 
         .on("mouseout", function (d, i) {
@@ -201,86 +199,160 @@ d3.csv("bystate_fromcz_rounded.csv", function(data) {
 // //line chart 
 // //code from https://www.d3-graph-gallery.com/graph/line_basic.html
 //     // set the dimensions and margins of the graph
-var margin = {top: 30, right: 30, bottom: 30, left: 60},
-Lwidth = 460 - margin.left - margin.right,
-Lheight = 400 - margin.top - margin.bottom;
+var margin = { top: 30, right: 30, bottom: 30, left: 60 },
+  Lwidth = 460 - margin.left - margin.right,
+  Lheight = 400 - margin.top - margin.bottom
 
 // // append the svg object to the body of the page
-var Lsvg = d3.select("#linechart")
-.append("svg")
-.attr("width", Lwidth + margin.left + margin.right)
-.attr("height", Lheight + margin.top + margin.bottom)
-.append("g")
-.attr("transform",
-      "translate(" + margin.left + "," + margin.top + ")");
+var Lsvg = d3
+  .select("#linechart")
+  .append("svg")
+  .attr("width", Lwidth + margin.left + margin.right)
+  .attr("height", Lheight + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
-      var labelx = 'Parent Income Percentile';
+var labelx = "Parent Income Percentile"
 
 // //Read the data
-d3.csv("gender_nat.csv", function(data){
-// // When reading the csv, I must format variables:
-// function(d){
-// return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
-// },
+d3.csv("gender_nat.csv", function (data) {
+  // // When reading the csv, I must format variables:
+  // function(d){
+  // return { date : d3.timeParse("%Y-%m-%d")(d.date), value : d.value }
+  // },
 
-// // Add X axis --> it is a date format
-var x = d3.scaleLinear()
-.domain([0,100])
-//   .domain(d3.extent(data, function(d) { return d.par_pctile; }))
-  .range([ 0, Lwidth ]);
-Lsvg.append("g")
-  .attr("transform", "translate(0," + Lheight + ")")
-  .call(d3.axisBottom(x));
+  // // Add X axis --> it is a date format
+  var x = d3
+    .scaleLinear()
+    .domain([0, 100])
+    //   .domain(d3.extent(data, function(d) { return d.par_pctile; }))
+    .range([0, Lwidth])
+  Lsvg.append("g")
+    .attr("transform", "translate(0," + Lheight + ")")
+    .call(d3.axisBottom(x))
 
-// // Add Y axis
-var y = d3.scaleLinear()
-  .domain([0, d3.max(data, function(d) { return +d.w2wages_30_m; })])
-  .range([ Lheight, 0 ]);
-Lsvg.append("g")
-  .call(d3.axisLeft(y));
+  // // Add Y axis
+  var y = d3
+    .scaleLinear()
+    .domain([
+      0,
+      d3.max(data, function (d) {
+        return +d.w2wages_30_m
+      }),
+    ])
+    .range([Lheight, 0])
+  Lsvg.append("g").call(d3.axisLeft(y))
 
-// // Add the line
-Lsvg.append("path")
-  .datum(data)
-  .style("fill", "none")
-  .style("stroke", "steelblue")
-  .style("stroke-width", 2)
-  .attr("d", d3.line()
-    .x(function(d) { return x(d.par_pctile) })
-    .y(function(d) { return y(d.w2wages_30_m) })
+  // // Add the line
+  Lsvg.append("path")
+    .datum(data)
+    .style("fill", "none")
+    .style("stroke", "steelblue")
+    .style("stroke-width", 2)
+    .attr(
+      "d",
+      d3
+        .line()
+        .x(function (d) {
+          return x(d.par_pctile)
+        })
+        .y(function (d) {
+          return y(d.w2wages_30_m)
+        })
     )
 
-Lsvg.append("path")
+  Lsvg.append("path")
     .datum(data)
     .style("fill", "none")
     .style("stroke", "pink")
     .style("stroke-width", 2)
-    .attr("d", d3.line()
-      .x(function(d) { return x(d.par_pctile) })
-      .y(function(d) { return y(d.w2wages_30_f) })
-      )
+    .attr(
+      "d",
+      d3
+        .line()
+        .x(function (d) {
+          return x(d.par_pctile)
+        })
+        .y(function (d) {
+          return y(d.w2wages_30_f)
+        })
+    )
 
-Lsvg.append("text")
+  Lsvg.append("text")
     .attr("class", "x label")
     .attr("text-anchor", "end")
     .attr("x", Lwidth - 110)
     .attr("y", Lheight + 30)
-    .text("Parent Income Percentile");
+    .text("Parent Income Percentile")
 
-Lsvg.append("text")
+  Lsvg.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "end")
     .attr("y", -60)
     .attr("x", -120)
     .attr("dy", ".75em")
     .attr("transform", "rotate(-90)")
-    .text("Wages");
+    .text("Wages")
 
-Lsvg.append("text")
+  Lsvg.append("text")
     .attr("class", "x label")
     .attr("text-anchor", "end")
     .attr("y", Lheight - 350)
-    .attr("x", Lwidth+ 10)
-    .text("Average Wages of 30 year olds from Varying Parent Income Percentiles");
+    .attr("x", Lwidth + 10)
+    .text(
+      "Average Wages of 30 year olds from Varying Parent Income Percentiles"
+    )
+})
 
+// ROB ADDING CIRCLES ----------------------------------------
+
+d3.csv("bystate_fromcz_rounded.csv", function (data) {
+  //   console.log(data[32].state_id)
+  //   console.log(data[32].gini)
+
+  // NY name and GINI
+  var state1_name = data[32].state_id
+  var state1_gini = [data[32].gini]
+
+  // debug
+  console.log(state1_name)
+  console.log(state1_gini)
+
+  // FL name and GINI
+  var state2_name = data[9].state_id
+  var state2_gini = data[9].gini
+
+  // debug
+  console.log(state2_name)
+  console.log(state2_gini)
+
+  // temp radii for testing (still need math to go from raw GINI to calculated size of circle shown)
+  var test_radius = [30, 45]
+
+  // CIRCLE 1 ----------------
+  var divSelection = d3.select("#circle1")
+
+  // add SVG to the div
+  var svgSelection = divSelection
+    .append("svg")
+    .attr("width", 200)
+    .attr("height", 200)
+
+  // add circle to that SVG (as many as there are items in the data array)
+  var circles = svgSelection
+    .selectAll("circle")
+    .data(test_radius)
+    .enter()
+    .append("circle")
+
+  // for each circle: add attributes, compute spacing, set radii to bound data
+  var circleAttributes = circles
+    .attr("cx", function (d, i) {
+      return i * 80 + 50
+    })
+    .attr("cy", 50)
+    .attr("r", function (d) {
+      return d
+    })
+    .style("fill", "steelblue")
 })
