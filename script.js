@@ -109,6 +109,7 @@ d3.csv("bystate_fromcz_rounded.csv", function(data) {
             .selectAll("circle")
             .data(uState.features)
             .enter().append("circle")
+            .attr("id","bubblemap")
             .attr("transform", function(d) { return "translate(" + path.centroid(d) + ")"; })
 
         document.getElementById("theil").onclick = function(){
@@ -121,7 +122,7 @@ d3.csv("bystate_fromcz_rounded.csv", function(data) {
         
         document.getElementById("state_pop").onclick = function(){
             console.log('show bubble map');
-            d3.selectAll("circle")
+            d3.selectAll("#bubblemap")
             .attr("fill","rgba(0, 0, 0, 0.4)")
             .attr("stroke","rgba(0,0,0,0.2)")
             .attr("stroke-width","0.5px")
