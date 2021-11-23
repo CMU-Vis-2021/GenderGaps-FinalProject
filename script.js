@@ -26,6 +26,7 @@ const path = d3.geoPath().projection(projection)
 //create tooltip
 const tooltip = d3.select("#chart").append("div")
         .attr("class", "tooltip")
+        
         .style("opacity", 0);
     
 d3.csv("bystate_fromcz_rounded.csv", function(data) {
