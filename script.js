@@ -201,8 +201,8 @@ d3.csv("bystate_fromcz_rounded.csv", function(data) {
 // //code from https://www.d3-graph-gallery.com/graph/line_basic.html
 //     // set the dimensions and margins of the graph
 var margin = { top: 30, right: 30, bottom: 30, left: 60 },
-  Lwidth = 460 - margin.left - margin.right,
-  Lheight = 400 - margin.top - margin.bottom
+  Lwidth = 1000 - margin.left - margin.right,
+  Lheight = 600 - margin.top - margin.bottom
 
 // // append the svg object to the body of the page
 var Lsvg = d3
@@ -245,40 +245,60 @@ d3.csv("gender_nat.csv", function (data) {
   Lsvg.append("g").call(d3.axisLeft(y))
 
   // // Add the line
-  Lsvg.append("path")
-    .datum(data)
-    .style("fill", "none")
-    .style("stroke", "steelblue")
-    .style("stroke-width", 2)
-    .attr(
-      "d",
-      d3
-        .line()
-        .x(function (d) {
-          return x(d.par_pctile)
-        })
-        .y(function (d) {
-          return y(d.w2wages_30_m)
-        })
-    )
+  // Lsvg.append("path")
+  //   .datum(data)
+  //   .style("fill", "none")
+  //   .style("stroke", "steelblue")
+  //   .style("stroke-width", 2)
+  //   .attr(
+  //     "d",
+  //     d3
+  //       .line()
+  //       .x(function (d) {
+  //         return x(d.par_pctile)
+  //       })
+  //       .y(function (d) {
+  //         return y(d.w2wages_30_m)
+  //       })
+  //   )
 
-  Lsvg.append("path")
-    .datum(data)
-    .style("fill", "none")
-    .style("stroke", "pink")
-    .style("stroke-width", 2)
-    .attr(
-      "d",
-      d3
-        .line()
-        .x(function (d) {
-          return x(d.par_pctile)
-        })
-        .y(function (d) {
-          return y(d.w2wages_30_f)
-        })
-    )
+  // Lsvg.append("path")
+  //   .datum(data)
+  //   .style("fill", "none")
+  //   .style("stroke", "pink")
+  //   .style("stroke-width", 2)
+  //   .attr(
+  //     "d",
+  //     d3
+  //       .line()
+  //       .x(function (d) {
+  //         return x(d.par_pctile)
+  //       })
+  //       .y(function (d) {
+  //         return y(d.w2wages_30_f)
+  //       })
+  //   )
 
+  // Add the scatterplot
+  Lsvg.selectAll("dot")
+  .data(data)
+  .enter()
+  .append("circle")
+  .style("fill", "pink")
+  .attr("r", 3.5)
+  .attr("cx", function(d) { return x(d.par_pctile); })
+  .attr("cy", function(d) { return y(d.w2wages_30_f); });
+
+  Lsvg.selectAll("dot")
+  .data(data)
+  .enter()
+  .append("circle")
+  .style("fill", "blue")
+  .attr("r", 3.5)
+  .attr("cx", function(d) { return x(d.par_pctile); })
+  .attr("cy", function(d) { return y(d.w2wages_30_m); });
+
+//x axis label
   Lsvg.append("text")
     .attr("class", "x label")
     .attr("text-anchor", "end")
@@ -286,6 +306,7 @@ d3.csv("gender_nat.csv", function (data) {
     .attr("y", Lheight + 30)
     .text("Parent Income Percentile")
 
+  //y-axis label
   Lsvg.append("text")
     .attr("class", "y label")
     .attr("text-anchor", "end")
@@ -295,11 +316,12 @@ d3.csv("gender_nat.csv", function (data) {
     .attr("transform", "rotate(-90)")
     .text("Wages")
 
+  //chart title label
   Lsvg.append("text")
     .attr("class", "x label")
     .attr("text-anchor", "end")
-    .attr("y", Lheight - 350)
-    .attr("x", Lwidth + 10)
+    .attr("y", Lheight-560)
+    .attr("x", Lwidth -190)
     .text(
       "Average Wages of 30 year olds from Varying Parent Income Percentiles"
     )
