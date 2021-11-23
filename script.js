@@ -327,23 +327,7 @@ d3.csv("gender_nat.csv", function (data) {
     )
 })
 
-// ROB ADDING CIRCLES ----------------------------------------
 
-d3.csv("bystate_fromcz_rounded.csv", function (data) {
-  //   console.log(data[32].state_id)
-  //   console.log(data[32].gini)
-
-  // NY name and GINI
-  var state1_name = data[32].state_id
-  var state1_gini = [data[32].gini]
-
-  // debug
-  console.log(state1_name)
-  console.log(state1_gini)
-
-  // FL name and GINI
-  var state2_name = data[9].state_id
-  var state2_gini = data[9].gini
 
   // debug
   console.log(state2_name)
@@ -351,8 +335,19 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   // temp radii for testing (still need math to go from raw GINI to calculated size of circle shown)
   var test_radius = [30, 45]
+  let radii = [0, 0.2, 0.5, 0.1]
 
   // CIRCLE 1 ----------------
+
+  // var scale_circle = d3.scaleLinear().domain(
+  //   d3.extent(radii, function (d) {
+  //     d
+  //   })
+  // )
+  var scale_circle = d3.scaleLinear().domain([0, 1]).range([0, 60])
+
+  console.log("radii", scale_circle(0.5))
+
   var divSelection = d3.select("#circle1")
 
   // add SVG to the div
@@ -362,20 +357,34 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .attr("height", 200)
 
   // add circle to that SVG (as many as there are items in the data array)
-  var circles = svgSelection
-    .selectAll("circle")
-    .data(test_radius)
-    .enter()
+  svgSelection
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
     .append("circle")
+    .attr("cx", 50)
+    .attr("cy", 50)
+    .attr("r", scale_circle(state1_gini))
+    .style("fill", "steelblue")
+
+  svgSelection
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
+    .append("circle")
+    .attr("cx", 150)
+    .attr("cy", 50)
+    .attr("r", scale_circle(state2_gini))
+    .style("fill", "steelblue")
 
   // for each circle: add attributes, compute spacing, set radii to bound data
-  var circleAttributes = circles
-    .attr("cx", function (d, i) {
-      return i * 80 + 50
-    })
-    .attr("cy", 50)
-    .attr("r", function (d) {
-      return d
-    })
-    .style("fill", "steelblue")
+  //   var circleAttributes = circles
+  //     .attr("cx", function (d, i) {
+  //       return i * 80 + 50
+  //     })
+  //     .attr("cy", 50)
+  //     .attr("r", function (d) {
+  //       return d
+  //     })
+  //     .style("fill", "steelblue")
 })
