@@ -336,6 +336,33 @@ d3.csv("gender_nat.csv", function (data) {
     )
 })
 
+//make key
+Lsvg.append("circle")
+  .attr("cx",20)
+  .attr("cy",-20)
+  .attr("r", 6)
+  .style("fill", "blue")
+
+Lsvg.append("circle")
+  .attr("cx",20)
+  .attr("cy",10)
+  .attr("r", 6)
+  .style("fill", "pink")
+
+Lsvg.append("text")
+  .attr("x", 40)
+  .attr("y", -20)
+  .text("Male")
+  .style("font-size", "15px")
+  .attr("alignment-baseline","middle")
+
+Lsvg.append("text")
+  .attr("x", 40)
+  .attr("y",10)
+  .text("Female")
+  .style("font-size", "15px")
+  .attr("alignment-baseline","middle")
+
 // ROB ADDING CIRCLES ----------------------------------------
 
 d3.csv("bystate_fromcz_rounded.csv", function (data) {
