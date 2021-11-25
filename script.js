@@ -24,6 +24,51 @@ const projection = d3
 const path = d3.geoPath().projection(projection)
 
 //create tooltip
+<<<<<<< HEAD
+const tooltip = d3.select("#chart").append("div")
+        .attr("class", "tooltip")
+        
+        .style("opacity", 0);
+    
+d3.csv("bystate_fromcz_rounded.csv", function(data) {
+    //grab the variable theil index - used to measure economic inequality
+    var theil = 'cs_race_theil_2000';
+
+    //set colors - the darker the red, the more inequality there are
+    lowColor = '#ffffff';
+    highColor = '#c43333';
+
+    //get grad rate min and max
+    let max = d3.max(data, function (d, i) {
+        return d[theil];
+    });
+    let min = d3.min(data, function (d, i) {
+        return d[theil];
+    });
+
+    //color ramp
+    var ramp = d3.scaleLinear()
+        .domain([min,max])
+        .range([lowColor,highColor]);
+
+    d3.json("https://gist.githubusercontent.com/Bradleykingz/3aa5206b6819a3c38b5d73cb814ed470/raw/a476b9098ba0244718b496697c5b350460d32f99/us-states.json", 
+        function(error, uState) {
+            if (error) throw error;
+            _(uState.features)
+            .keyBy('properties.name')
+            .merge(_.keyBy(data, 'state_id'))
+            .values()
+            .value();
+
+        svg.selectAll('path')
+            .data(uState.features)
+            .enter()
+            .append('path')
+            .attr("d", path)
+            .style('transition', "all 0.2s ease-in-out")
+            .attr('class', 'state')
+            .style('fill','rgb(230, 230, 230)')
+=======
 const tooltip = d3
   .select("#chart")
   .append("div")
@@ -68,6 +113,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
         .style("transition", "all 0.2s ease-in-out")
         .attr("class", "state")
         .style("fill", "rgb(230, 230, 230)")
+>>>>>>> 3618960d49559f3af23a4c2a89d6fa7633f393a9
 
         //adding hover interactions
         .on("mousemove", function (d) {
