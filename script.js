@@ -48,21 +48,23 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
   })
 
   //get gender difference min and max
-  let gDiffMax = d3.max(data, function(d, i){
+  let gDiffMax = d3.max(data, function (d, i) {
     return d[gdiff]
   })
-  console.log("gdiff max is: " + gDiffMax);
+  console.log("gdiff max is: " + gDiffMax)
   let gDiffMin = d3.min(data, function (d, i) {
     return d[gdiff]
   })
-  console.log("gdiff min is: " + gDiffMin);
+  console.log("gdiff min is: " + gDiffMin)
 
   //color ramp for thiel index
   var ramp = d3.scaleLinear().domain([min, max]).range([lowColor, highColor])
 
   //create color ramp for gender difference
-  var gDiffRamp = d3.scaleLinear().domain([gDiffMin, 0, gDiffMax]).range(["orange", "white", "steelblue"])
-
+  var gDiffRamp = d3
+    .scaleLinear()
+    .domain([gDiffMin, 0, gDiffMax])
+    .range(["orange", "white", "steelblue"])
 
   d3.json(
     "https://gist.githubusercontent.com/Bradleykingz/3aa5206b6819a3c38b5d73cb814ed470/raw/a476b9098ba0244718b496697c5b350460d32f99/us-states.json",
@@ -83,11 +85,11 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         .attr("d", path)
         .style("transition", "all 0.2s ease-in-out")
         .attr("class", "state")
-        .style("stroke","#666666")
+        .style("stroke", "#666666")
         .style("fill", function (d) {
           return ramp(d[theil])
         })
-        
+
         //adding hover interactions
         .on("mousemove", function (d) {
           tooltip
@@ -96,7 +98,10 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             .style("opacity", 0.9)
             .style("left", d3.event.pageX + "px")
             .style("top", d3.event.pageY + "px")
-            .text(() => `${d.state_id}'s Theil Index : ${d[theil]}; Gender Difference : ${d[gdiff]}`)
+            .text(
+              () =>
+                `${d.state_id}'s Theil Index : ${d[theil]}; Gender Difference : ${d[gdiff]}`
+            )
         })
 
         .on("mouseover", function (d) {
@@ -115,7 +120,8 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         })
 
       //legend
-      var w = 100,h = 480
+      var w = 100,
+        h = 480
       var key = d3
         .select("#chart")
         .append("svg")
@@ -139,7 +145,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         .attr("offset", "0%")
         .attr("stop-color", highColor)
         .attr("stop-opacity", 1)
-      
+
       // adding low bound
       legend
         .append("stop")
@@ -165,20 +171,20 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         .attr("class", "y axis")
         .attr("transform", "translate(25,10)")
         .call(yAxis)
-      
+
       //get the correct porportion for population size
       var radius = d3.scaleSqrt().domain([0, 1e6]).range([0, 6])
 
-      function updateMap(){
+      function updateMap() {
         console.log("updating the map")
-        //remove choropleth 
+        //remove choropleth
         svg
           .transition()
           .duration(300)
           .selectAll(".state")
-          .style("fill","#f5f2f0")
-          .style("stroke","lightgray")
-        
+          .style("fill", "#f5f2f0")
+          .style("stroke", "lightgray")
+
         //adding bubble
         svg
           .append("g")
@@ -201,12 +207,13 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("r", function (d) {
             return radius(d.pop2000)
           })
-        
+
         // update the legend scale
         // remove the old legend
-        d3.selectAll(".legend").remove();
+        d3.selectAll(".legend").remove()
 
-        var w = 100,h = 480
+        var w = 100,
+          h = 480
         var key = d3
           .select("#chart")
           .append("svg")
@@ -227,28 +234,28 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         // adding high bound
         legend
           .append("stop")
-          .attr('class','start')
+          .attr("class", "start")
           .attr("offset", "0%")
-          .attr("stop-color",gDiffRamp(gDiffMax))
+          .attr("stop-color", gDiffRamp(gDiffMax))
           //.attr("stop-color", "steelblue")
           .attr("stop-opacity", 1)
-        
+
         // adding middle point
         legend
           .append("stop")
           .attr("offset", "50%")
           .attr("stop-color", "white")
           .attr("stop-opacity", 1)
-        
+
         // adding low bound
         legend
           .append("stop")
-          .attr('class','end')
+          .attr("class", "end")
           .attr("offset", "100%")
           //.attr("stop-color", "orange")
-          .attr("stop-color",gDiffRamp(gDiffMin-0.001))
+          .attr("stop-color", gDiffRamp(gDiffMin - 0.001))
           .attr("stop-opacity", 1)
-        
+
         // legend
         //   .append("title")
         //   .attr("text-anchor","middle")
@@ -262,21 +269,20 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("height", h + 10)
           .style("fill", "url(#gradient)")
           .attr("transform", "translate(0,0)")
-        
+
         key
           .append("g")
           .attr("class", "y axis")
           .attr("transform", "translate(25,0)")
           .call(yAxisgDiff)
       }
-  
-      // call the transition 
-      console.log("before");
-      setTimeout(() => { 
-        console.log("after 2 sec call update function"); 
-        updateMap();
-        }, 
-        2000);
+
+      // call the transition
+      console.log("before")
+      setTimeout(() => {
+        console.log("after 2 sec call update function")
+        updateMap()
+      }, 2000)
 
       //state abbr
       // svg.selectAll("text")
@@ -295,7 +301,6 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
       //     .attr("text-anchor","middle")
       //     .attr('font-size','6pt')
       //     .attr('color','darkgray')
-        
     }
   )
 })
@@ -328,12 +333,8 @@ var L2svg = d3
 
 // //Read the data
 d3.csv("gender_nat.csv", function (data) {
-
   // // Add X axis
-  var x = d3
-    .scaleLinear()
-    .domain([0, 100])
-    .range([0, Lwidth])
+  var x = d3.scaleLinear().domain([0, 100]).range([0, Lwidth])
   Lsvg.append("g")
     .attr("transform", "translate(0," + Lheight + ")")
     .call(d3.axisBottom(x))
@@ -401,7 +402,7 @@ d3.csv("gender_nat.csv", function (data) {
       return y(d.w2wages_30_f)
     })
 
-    //male dots added
+  //male dots added
   Lsvg.selectAll("dot")
     .data(data)
     .enter()
@@ -443,58 +444,53 @@ d3.csv("gender_nat.csv", function (data) {
       "Average Wages of 30 year olds from Varying Parent Income Percentiles"
     )
 
-//make key
-Lsvg.append("circle")
-  .attr("cx", 20)
-  .attr("cy", -20)
-  .attr("r", 6)
-  .style("fill", "blue")
+  //make key
+  Lsvg.append("circle")
+    .attr("cx", 20)
+    .attr("cy", -20)
+    .attr("r", 6)
+    .style("fill", "blue")
 
-Lsvg.append("circle")
-  .attr("cx", 20)
-  .attr("cy", 10)
-  .attr("r", 6)
-  .style("fill", "pink")
+  Lsvg.append("circle")
+    .attr("cx", 20)
+    .attr("cy", 10)
+    .attr("r", 6)
+    .style("fill", "pink")
 
-Lsvg.append("text")
-  .attr("x", 40)
-  .attr("y", -20)
-  .text("Male")
-  .style("font-size", "15px")
-  .attr("alignment-baseline", "middle")
+  Lsvg.append("text")
+    .attr("x", 40)
+    .attr("y", -20)
+    .text("Male")
+    .style("font-size", "15px")
+    .attr("alignment-baseline", "middle")
 
-Lsvg.append("text")
-  .attr("x", 40)
-  .attr("y", 10)
-  .text("Female")
-  .style("font-size", "15px")
-  .attr("alignment-baseline", "middle")
+  Lsvg.append("text")
+    .attr("x", 40)
+    .attr("y", 10)
+    .text("Female")
+    .style("font-size", "15px")
+    .attr("alignment-baseline", "middle")
 
-  //scatterplot 2 
-// // Add X axis
-var x2 = d3
-.scaleLinear()
-.domain([0, 100])
-.range([0, Lwidth])
-L2svg.append("g")
-.attr("transform", "translate(0," + Lheight + ")")
-.call(d3.axisBottom(x2))
+  //scatterplot 2
+  // // Add X axis
+  var x2 = d3.scaleLinear().domain([0, 100]).range([0, Lwidth])
+  L2svg.append("g")
+    .attr("transform", "translate(0," + Lheight + ")")
+    .call(d3.axisBottom(x2))
 
+  // // Add Y axis
+  var y2 = d3
+    .scaleLinear()
+    .domain([
+      0.5,
+      d3.max(data, function (d) {
+        return +d.w2_pos_30_m
+      }),
+    ])
+    .range([Lheight, 0])
+  L2svg.append("g").call(d3.axisLeft(y2))
 
-// // Add Y axis
-var y2 = d3
-.scaleLinear() 
-.domain([
-  0.5,
-  d3.max(data, function (d) {
-    return +(d.w2_pos_30_m)
-  }),
-])
-.range([Lheight, 0])
-L2svg.append("g").call(d3.axisLeft(y2))
-
-
-// Add the scatterplot
+  // Add the scatterplot
 
   //female dots added
   L2svg.selectAll("dot")
@@ -510,7 +506,7 @@ L2svg.append("g").call(d3.axisLeft(y2))
       return y2(d.w2_pos_30_f)
     })
 
-    //male dots added
+  //male dots added
   L2svg.selectAll("dot")
     .data(data)
     .enter()
@@ -524,64 +520,60 @@ L2svg.append("g").call(d3.axisLeft(y2))
       return y2(d.w2_pos_30_m)
     })
 
-    //x axis label
+  //x axis label
   L2svg.append("text")
-  .attr("class", "x label")
-  .attr("text-anchor", "end")
-  .attr("x", Lwidth - 110)
-  .attr("y", Lheight + 30)
-  .text("Parent Income Percentile")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", Lwidth - 110)
+    .attr("y", Lheight + 30)
+    .text("Parent Income Percentile")
 
-//y-axis label
-L2svg.append("text")
-  .attr("class", "y label")
-  .attr("text-anchor", "end")
-  .attr("y", -60)
-  .attr("x", -120)
-  .attr("dy", ".75em")
-  .attr("transform", "rotate(-90)")
-  .text("Percent(decimal) employed")
+  //y-axis label
+  L2svg.append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "end")
+    .attr("y", -60)
+    .attr("x", -120)
+    .attr("dy", ".75em")
+    .attr("transform", "rotate(-90)")
+    .text("Percent(decimal) employed")
 
-//chart title label
-L2svg.append("text")
-  .attr("class", "x label")
-  .attr("text-anchor", "end")
-  .attr("y", Lheight - 560)
-  .attr("x", Lwidth - 190)
-  .text(
-    "Percent Employed of 30 year olds from Varying Parent Income Percentiles"
-  )
+  //chart title label
+  L2svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("y", Lheight - 560)
+    .attr("x", Lwidth - 190)
+    .text(
+      "Percent Employed of 30 year olds from Varying Parent Income Percentiles"
+    )
 
   L2svg.append("circle")
-  .attr("cx",20)
-  .attr("cy",-20)
-  .attr("r", 6)
-  .style("fill", "blue")
+    .attr("cx", 20)
+    .attr("cy", -20)
+    .attr("r", 6)
+    .style("fill", "blue")
 
-L2svg.append("circle")
-  .attr("cx",20)
-  .attr("cy",10)
-  .attr("r", 6)
-  .style("fill", "pink")
+  L2svg.append("circle")
+    .attr("cx", 20)
+    .attr("cy", 10)
+    .attr("r", 6)
+    .style("fill", "pink")
 
-L2svg.append("text")
-  .attr("x", 40)
-  .attr("y", -20)
-  .text("Male")
-  .style("font-size", "15px")
-  .attr("alignment-baseline","middle")
+  L2svg.append("text")
+    .attr("x", 40)
+    .attr("y", -20)
+    .text("Male")
+    .style("font-size", "15px")
+    .attr("alignment-baseline", "middle")
 
-L2svg.append("text")
-  .attr("x", 40)
-  .attr("y",10)
-  .text("Female")
-  .style("font-size", "15px")
-  .attr("alignment-baseline","middle")
-
-
+  L2svg.append("text")
+    .attr("x", 40)
+    .attr("y", 10)
+    .text("Female")
+    .style("font-size", "15px")
+    .attr("alignment-baseline", "middle")
 })
-
-
 
 // ROB ADDING CIRCLES ----------------------------------------
 
@@ -760,7 +752,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .text("FL")
 
   // HS dropout comparison
-  svgSelection2
+  drop_circle1 = svgSelection2
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
@@ -769,6 +761,8 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .attr("cy", 75)
     .attr("r", scale_circle_dropout(state1_dropout))
     .style("fill", "steelblue")
+
+  drop_circle1.transition().duration(2000).attr("r", 150)
 
   svgSelection2
     // .selectAll("circle")
