@@ -366,6 +366,8 @@ Lsvg.append("text")
 // ROB ADDING CIRCLES ----------------------------------------
 
 d3.csv("bystate_fromcz_rounded.csv", function (data) {
+  // GET DATA FOR COMPARISON
+
   // state names
   var state1_name = data[32].state_id
   var state2_name = data[9].state_id
@@ -374,39 +376,88 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   var state1_gini = data[32].gini
   var state2_gini = data[9].gini
 
-  // state HS graduation
-  var state1_gini = data[32].gini
-  var state2_gini = data[9].gini
+  // state HS dropout rate
+  var state1_dropout = data[32].dropout_r
+  var state2_dropout = data[9].dropout_r
 
   // state violent crime
   var state1_crime = data[32].crime_violent
   var state2_crime = data[9].crime_violent
 
   // state single parents
-  var state1_single = data[32].cs_fam_wkidsinglemom_st
-  var state2_single = data[9].cs_fam_wkidsinglemom_st
+  var state1_single = data[32].cs_fam_wkidsinglemom
+  var state2_single = data[9].cs_fam_wkidsinglemom
 
-  // debug
-  // console.log(state1_name)
-  // console.log(state1_gini)
+  // CREATE SCALES FOR CIRCLE COMPARISONS
 
-  // FL name and GINI
-  var state2_name = data[9].state_id
+  // get min and max for each comparision
+  var gini = "gini"
+  var dropout_r = "dropout_r"
+  var crime_violent = "crime_violent"
+  var cs_fam_wkidsinglemom = "cs_fam_wkidsinglemom"
 
-  // temp radii for testing (still need math to go from raw GINI to calculated size of circle shown)
-  var test_radius = [30, 45]
-  let radii = [0, 0.2, 0.5, 0.1]
+  // CREATE MIN MAX FOR SCALES
 
-  // CIRCLE 1 ----------------
+  // GINI min max
+  let max_gini = d3.max(data, function (d, i) {
+    return d[gini]
+  })
+  let min_gini = d3.min(data, function (d, i) {
+    return d[gini]
+  })
 
-  // var scale_circle = d3.scaleLinear().domain(
-  //   d3.extent(radii, function (d) {
-  //     d
-  //   })
-  // )
-  var scale_circle = d3.scaleLinear().domain([0, 1]).range([0, 120])
+  // dropout min max
+  let max_dropout = d3.max(data, function (d, i) {
+    return d[dropout_r]
+  })
+  let min_dropout = d3.min(data, function (d, i) {
+    return d[dropout_r]
+  })
 
-  console.log("radii", scale_circle(0.5))
+  // violent crime min max
+  let max_crime_violent = d3.max(data, function (d, i) {
+    return d[crime_violent]
+  })
+  let min_crime_violent = d3.min(data, function (d, i) {
+    return d[crime_violent]
+  })
+
+  // single parent families min max
+  let max_cs_fam_wkidsinglemom = d3.max(data, function (d, i) {
+    return d[cs_fam_wkidsinglemom]
+  })
+  let min_cs_fam_wkidsinglemom = d3.min(data, function (d, i) {
+    return d[cs_fam_wkidsinglemom]
+  })
+
+  // set scales
+
+  // gini scale
+  var scale_circle_gini = d3
+    .scaleSqrt()
+    .domain([min_gini, max_gini])
+    .range([0, 75])
+
+  // dropout scale
+  var scale_circle_dropout = d3
+    .scaleSqrt()
+    .domain([min_dropout, max_dropout])
+    .range([0, 75])
+
+  // violent crime scale
+  var scale_circle_crime_violent = d3
+    .scaleSqrt()
+    .domain([min_crime_violent, max_crime_violent])
+    .range([0, 75])
+
+  var scale_circle_cs_fam_wkidsinglemom = d3
+    .scaleSqrt()
+    .domain([min_cs_fam_wkidsinglemom, max_cs_fam_wkidsinglemom])
+    .range([0, 75])
+
+  console.log("radii", scale_circle_gini(0.5))
+
+  // DRAWING CIRCLES
 
   // selecting divs for case study circle comparisons
 
@@ -446,7 +497,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 75)
     .attr("cy", 75)
-    .attr("r", scale_circle(state1_gini))
+    .attr("r", scale_circle_gini(state1_gini))
     .style("fill", "steelblue")
 
   svgSelection1
@@ -456,10 +507,10 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 225)
     .attr("cy", 75)
-    .attr("r", scale_circle(state2_gini))
+    .attr("r", scale_circle_gini(state2_gini))
     .style("fill", "green")
 
-  // HS Graduation comparison
+  // HS dropout comparison
   svgSelection2
     // .selectAll("circle")
     // .data(test_radius)
@@ -467,7 +518,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 75)
     .attr("cy", 75)
-    .attr("r", scale_circle(state1_gini))
+    .attr("r", scale_circle_dropout(state1_dropout))
     .style("fill", "steelblue")
 
   svgSelection2
@@ -477,7 +528,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 225)
     .attr("cy", 75)
-    .attr("r", scale_circle(state2_gini))
+    .attr("r", scale_circle_dropout(state2_dropout))
     .style("fill", "green")
 
   // violent crime comparison
@@ -488,7 +539,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 75)
     .attr("cy", 75)
-    .attr("r", scale_circle(state1_crime))
+    .attr("r", scale_circle_crime_violent(state1_crime))
     .style("fill", "steelblue")
 
   svgSelection3
@@ -498,7 +549,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 225)
     .attr("cy", 75)
-    .attr("r", scale_circle(state2_crime))
+    .attr("r", scale_circle_crime_violent(state2_crime))
     .style("fill", "green")
 
   // single parent family comparison
@@ -509,7 +560,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 75)
     .attr("cy", 75)
-    .attr("r", scale_circle(state1_single))
+    .attr("r", scale_circle_cs_fam_wkidsinglemom(state1_single))
     .style("fill", "steelblue")
 
   svgSelection4
@@ -519,17 +570,6 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 225)
     .attr("cy", 75)
-    .attr("r", scale_circle(state2_single))
+    .attr("r", scale_circle_cs_fam_wkidsinglemom(state2_single))
     .style("fill", "green")
-
-  // for each circle: add attributes, compute spacing, set radii to bound data
-  //   var circleAttributes = circles
-  //     .attr("cx", function (d, i) {
-  //       return i * 80 + 50
-  //     })
-  //     .attr("cy", 50)
-  //     .attr("r", function (d) {
-  //       return d
-  //     })
-  //     .style("fill", "steelblue")
 })
