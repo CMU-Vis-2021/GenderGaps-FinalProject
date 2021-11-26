@@ -487,10 +487,17 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .attr("width", 600)
     .attr("height", 200)
 
+  // TESTING TEXT
+
+  var g1 = svgSelection1.append("g").attr("transform", function (d, i) {
+    return "translate(0,0)"
+  })
+
   // adding circles the SVGs in each div
 
   // GINI comparison
-  svgSelection1
+  g1
+    // svgSelection1
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
@@ -499,8 +506,22 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .attr("cy", 75)
     .attr("r", scale_circle_gini(state1_gini))
     .style("fill", "steelblue")
+    .append("text")
 
-  svgSelection1
+  g1.append("text")
+    .attr("x", 75)
+    .attr("y", 75)
+    // .attr("stroke", "#fff")
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text("NY")
+
+  var g2 = svgSelection1.append("g").attr("transform", function (d, i) {
+    return "translate(0,0)"
+  })
+
+  g2
+    // svgSelection1
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
@@ -509,6 +530,14 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .attr("cy", 75)
     .attr("r", scale_circle_gini(state2_gini))
     .style("fill", "green")
+
+  g2.append("text")
+    .attr("x", 225)
+    .attr("y", 75)
+    // .attr("stroke", "#fff")
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text("FL")
 
   // HS dropout comparison
   svgSelection2
