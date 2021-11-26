@@ -338,14 +338,14 @@ d3.csv("gender_nat.csv", function (data) {
 
 //make key
 Lsvg.append("circle")
-  .attr("cx",20)
-  .attr("cy",-20)
+  .attr("cx", 20)
+  .attr("cy", -20)
   .attr("r", 6)
   .style("fill", "blue")
 
 Lsvg.append("circle")
-  .attr("cx",20)
-  .attr("cy",10)
+  .attr("cx", 20)
+  .attr("cy", 10)
   .attr("r", 6)
   .style("fill", "pink")
 
@@ -354,32 +354,44 @@ Lsvg.append("text")
   .attr("y", -20)
   .text("Male")
   .style("font-size", "15px")
-  .attr("alignment-baseline","middle")
+  .attr("alignment-baseline", "middle")
 
 Lsvg.append("text")
   .attr("x", 40)
-  .attr("y",10)
+  .attr("y", 10)
   .text("Female")
   .style("font-size", "15px")
-  .attr("alignment-baseline","middle")
+  .attr("alignment-baseline", "middle")
 
 // ROB ADDING CIRCLES ----------------------------------------
 
 d3.csv("bystate_fromcz_rounded.csv", function (data) {
-  //   console.log(data[32].state_id)
-  //   console.log(data[32].gini)
-
-  // NY name and GINI
+  // state names
   var state1_name = data[32].state_id
-  var state1_gini = [data[32].gini]
+  var state2_name = data[9].state_id
+
+  // state GINI index
+  var state1_gini = data[32].gini
+  var state2_gini = data[9].gini
+
+  // state HS graduation
+  var state1_gini = data[32].gini
+  var state2_gini = data[9].gini
+
+  // state violent crime
+  var state1_crime = data[32].crime_violent
+  var state2_crime = data[9].crime_violent
+
+  // state single parents
+  var state1_single = data[32].cs_fam_wkidsinglemom_st
+  var state2_single = data[9].cs_fam_wkidsinglemom_st
 
   // debug
-  console.log(state1_name)
-  console.log(state1_gini)
+  // console.log(state1_name)
+  // console.log(state1_gini)
 
   // FL name and GINI
   var state2_name = data[9].state_id
-  var state2_gini = data[9].gini
 
   // temp radii for testing (still need math to go from raw GINI to calculated size of circle shown)
   var test_radius = [30, 45]
@@ -392,39 +404,123 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   //     d
   //   })
   // )
-  var scale_circle = d3.scaleLinear().domain([0, 1]).range([0, 60])
+  var scale_circle = d3.scaleLinear().domain([0, 1]).range([0, 120])
 
   console.log("radii", scale_circle(0.5))
 
-  var divSelection = d3.select("#circle1")
+  // selecting divs for case study circle comparisons
 
-  // add SVG to the div
-  var svgSelection = divSelection
+  var divSelection1 = d3.select("#circles1")
+  var divSelection2 = d3.select("#circles2")
+  var divSelection3 = d3.select("#circles3")
+  var divSelection4 = d3.select("#circles4")
+
+  // add SVGs to all 4 divs
+  var svgSelection1 = divSelection1
     .append("svg")
-    .attr("width", 200)
+    .attr("width", 600)
     .attr("height", 200)
 
-  // add circle 1 to that SVG (as many as there are items in the data array)
-  svgSelection
+  var svgSelection2 = divSelection2
+    .append("svg")
+    .attr("width", 600)
+    .attr("height", 200)
+
+  var svgSelection3 = divSelection3
+    .append("svg")
+    .attr("width", 600)
+    .attr("height", 200)
+
+  var svgSelection4 = divSelection4
+    .append("svg")
+    .attr("width", 600)
+    .attr("height", 200)
+
+  // adding circles the SVGs in each div
+
+  // GINI comparison
+  svgSelection1
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 50)
-    .attr("cy", 50)
+    .attr("cx", 75)
+    .attr("cy", 75)
     .attr("r", scale_circle(state1_gini))
     .style("fill", "steelblue")
 
-  // add circle 2 to that SVG (as many as there are items in the data array)
-  svgSelection
+  svgSelection1
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 150)
-    .attr("cy", 50)
+    .attr("cx", 225)
+    .attr("cy", 75)
     .attr("r", scale_circle(state2_gini))
+    .style("fill", "green")
+
+  // HS Graduation comparison
+  svgSelection2
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
+    .append("circle")
+    .attr("cx", 75)
+    .attr("cy", 75)
+    .attr("r", scale_circle(state1_gini))
     .style("fill", "steelblue")
+
+  svgSelection2
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
+    .append("circle")
+    .attr("cx", 225)
+    .attr("cy", 75)
+    .attr("r", scale_circle(state2_gini))
+    .style("fill", "green")
+
+  // violent crime comparison
+  svgSelection3
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
+    .append("circle")
+    .attr("cx", 75)
+    .attr("cy", 75)
+    .attr("r", scale_circle(state1_crime))
+    .style("fill", "steelblue")
+
+  svgSelection3
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
+    .append("circle")
+    .attr("cx", 225)
+    .attr("cy", 75)
+    .attr("r", scale_circle(state2_crime))
+    .style("fill", "green")
+
+  // single parent family comparison
+  svgSelection4
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
+    .append("circle")
+    .attr("cx", 75)
+    .attr("cy", 75)
+    .attr("r", scale_circle(state1_single))
+    .style("fill", "steelblue")
+
+  svgSelection4
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
+    .append("circle")
+    .attr("cx", 225)
+    .attr("cy", 75)
+    .attr("r", scale_circle(state2_single))
+    .style("fill", "green")
 
   // for each circle: add attributes, compute spacing, set radii to bound data
   //   var circleAttributes = circles

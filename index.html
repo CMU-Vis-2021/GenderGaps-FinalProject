@@ -1,44 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>Childhood environment and gender gaps in adulthood</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3.v4.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.15/lodash.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tinycolor/1.4.1/tinycolor.js"></script>
     <script src="https://d3js.org/topojson.v2.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <h1>Childhood Environment and Gender Gaps in Adulthood</h1>
-    <h5>By Tammy Zhou, Priya Jain, Alana Mittleman, and Rob Lambeth</h5> 
+    <h5>By Tammy Zhou, Priya Jain, Alana Mittleman, and Rob Lambeth</h5>
     <h5>Data Visualization Final Project @CMU 2021</h5>
 
     <div id="vis">
-        <h4>US Map of regional economic inequality and gender gap</h4>
-        <p>
-            The <b>Theil index </b>is a statistic used to measure economic
-            inequality. The Theil index measures an entropic "distance" the
-            population is away from the "ideal" egalitarian state of everyone having
-            the same income. The numerical result is in terms of negative entropy so
-            that a higher number indicates more order that is further away from the
-            "ideal" of maximum disorder. Formulating the index to represent negative
-            entropy instead of entropy allows it to be a measure of inequality
-            rather than equality.
-          </p>
-        <button id="theil" class="button">Show Economic Inqueality (Choropleth)</button>
-        <button id="state_pop" class="button">Show State population (Bubble Map)</button>
-        <div id = "chart"></div>
+      <h4>US Map of regional economic inequality and gender gap</h4>
+      <p>
+        The <b>Theil index </b>is a statistic used to measure economic
+        inequality. The Theil index measures an entropic "distance" the
+        population is away from the "ideal" egalitarian state of everyone having
+        the same income. The numerical result is in terms of negative entropy so
+        that a higher number indicates more order that is further away from the
+        "ideal" of maximum disorder. Formulating the index to represent negative
+        entropy instead of entropy allows it to be a measure of inequality
+        rather than equality.
+      </p>
+      <button id="theil" class="button">
+        Show Economic Inqueality (Choropleth)
+      </button>
+      <button id="state_pop" class="button">
+        Show State population (Bubble Map)
+      </button>
+      <div id="chart"></div>
     </div>
-    <br><br><br><br>
-    <div id = "linechart"></div>
+    <br /><br /><br /><br />
+    <div id="linechart"></div>
     <div id="case_study">
-        <div class="circle" id="circle1">
-          <h4>Circle1</h4>
-        </div>
+      <div class="case_circles" id="circles1">
+        <h4>Comparing NY vs. FL GINI index</h4>
       </div>
-    
+      <div class="case_circles" id="circles2">
+        <h4>Comparing NY vs. FL high school graduation</h4>
+      </div>
+      <div class="case_circles" id="circles3">
+        <h4>Comparing NY vs. FL violent crime</h4>
+        (Turns out the data is very small and strange here. Not sure about this
+        one.)
+      </div>
+      <div class="case_circles" id="circles4">
+        <h4>Comparing NY vs. FL single parent family count</h4>
+      </div>
+    </div>
+
     <script src="script.js" defer></script>
-</body>
+  </body>
 </html>
