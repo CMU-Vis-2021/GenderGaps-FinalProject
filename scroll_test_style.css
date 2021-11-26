@@ -1,0 +1,171 @@
+/* Team's original CSS from style.css on 11/24 5PM (separate from borrowed template CSS lower in this doc) */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: black;
+}
+
+path {
+  stroke: black;
+  stroke-width: 0.5px;
+  fill: black;
+}
+
+.state {
+  stroke-width: 1;
+  stroke: #777777;
+}
+
+.state:hover {
+  fill: lightblue;
+  cursor: pointer;
+}
+
+.button {
+  background-color: white;
+  color: black;
+  border: 1px solid #e7e7e7;
+  border-radius: 5px;
+  padding: 12px 30px;
+  text-align: center;
+  display: inline-block;
+  font-size: 15px;
+  margin: 4px 2px;
+  transition-duration: 0.2s;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: gray;
+  color: white;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  padding: 10px;
+}
+
+p {
+  color: #777777;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+h4 {
+  font-weight: 600;
+}
+
+h5 {
+  font-weight: 400;
+}
+
+div.tooltip {
+  position: absolute;
+  text-align: left;
+  width: 120px;
+  min-height: 30px;
+  padding: 8px 12px;
+  font: 12px sans-serif;
+  background: white;
+  border: 0px;
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+text.label {
+  font-size: 12px;
+  width: 200px;
+}
+
+.legend {
+  float: left;
+}
+
+.axis text {
+  font: 12px sans-serif;
+}
+
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+/* Borrowed template CSS added by Rob */
+
+.container {
+  width: 890px;
+}
+
+#graphic {
+  padding-top: 60px;
+}
+
+#sections {
+  position: relative;
+  display: inline-block;
+  width: 250px;
+  top: 0px;
+  z-index: 90;
+  padding-bottom: 200px;
+}
+
+.step {
+  margin-bottom: 200px;
+  font-family: "TiemposTextWeb-Regular", "Georgia";
+  font-size: 16px;
+  line-height: 23px;
+  color: #767678;
+}
+
+#sections .title {
+  font-family: Arial, Helvetica, "san-serif";
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 2px;
+  color: #262626;
+  line-height: 1.2em;
+}
+
+#extra-space {
+  height: 300px;
+}
+
+#vis {
+  display: inline-block;
+  position: fixed;
+  top: 60px;
+  z-index: 1;
+  margin-left: 0;
+  /* height: 600px; */
+  /* width: 600px; */
+  /* background-color: #ddd; */
+}
+
+#vis .title {
+  font-size: 120px;
+  text-anchor: middle;
+}
+
+#vis .sub-title {
+  font-size: 80px;
+  text-anchor: middle;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #666;
+  shape-rendering: crispEdges;
+}
+
+.highlight {
+  fill: #008080;
+  font-weight: bold;
+}
