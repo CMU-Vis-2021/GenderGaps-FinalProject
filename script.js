@@ -30,15 +30,16 @@ const tooltip = d3
   .attr("class", "tooltip")
   .style("opacity", 0)
 
-d3.csv("bystate_fromcz_rounded.csv", function (data) {
+d3.csv("bystate_fromcz_avgs.csv", function (data) {
   //grab the variable theil index - used to measure economic inequality
   var theil = "cs_race_theil_2000"
+  var gdiff = "all_q_dif"
 
   //set colors - the darker the red, the more inequality there are
   lowColor = "#ffffff"
   highColor = "#c43333"
 
-  //get grad rate min and max
+  //get theil index min and max
   let max = d3.max(data, function (d, i) {
     return d[theil]
   })
@@ -46,8 +47,22 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     return d[theil]
   })
 
-  //color ramp
+  //get gender difference min and max
+  let gDiffMax = d3.max(data, function(d, i){
+    return d[gdiff]
+  })
+  console.log("gdiff max is: " + gDiffMax);
+  let gDiffMin = d3.min(data, function (d, i) {
+    return d[gdiff]
+  })
+  console.log("gdiff min is: " + gDiffMin);
+
+  //color ramp for thiel index
   var ramp = d3.scaleLinear().domain([min, max]).range([lowColor, highColor])
+
+  //create color ramp for gender difference
+  var gDiffRamp = d3.scaleLinear().domain([gDiffMin, 0, gDiffMax]).range(["orange", "white", "steelblue"])
+
 
   d3.json(
     "https://gist.githubusercontent.com/Bradleykingz/3aa5206b6819a3c38b5d73cb814ed470/raw/a476b9098ba0244718b496697c5b350460d32f99/us-states.json",
@@ -59,6 +74,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
         .values()
         .value()
 
+      //outline the map
       svg
         .selectAll("path")
         .data(uState.features)
@@ -67,18 +83,22 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
         .attr("d", path)
         .style("transition", "all 0.2s ease-in-out")
         .attr("class", "state")
-        .style("fill", "rgb(230, 230, 230)")
-
+        .style("stroke","#666666")
+        .style("fill", function (d) {
+          return ramp(d[theil])
+        })
+        
         //adding hover interactions
         .on("mousemove", function (d) {
-          tooltip.transition().duration(200).style("opacity", 0.9)
           tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0.9)
             .style("left", d3.event.pageX + "px")
             .style("top", d3.event.pageY + "px")
-            .text(() => `${d.state_id}'s Theil Index : ${d[theil]}`)
+            .text(() => `${d.state_id}'s Theil Index : ${d[theil]}; Gender Difference : ${d[gdiff]}`)
         })
 
-        //see this
         .on("mouseover", function (d) {
           d3.select(this)
             .style("opacity", 1)
@@ -94,39 +114,169 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
           tooltip.transition().duration(200).style("opacity", 0)
         })
 
+      //legend
+      var w = 100,h = 480
+      var key = d3
+        .select("#chart")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h)
+        .attr("class", "legend")
+
+      var legend = key
+        .append("defs")
+        .append("svg:linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "100%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%")
+        .attr("spreadMethod", "pad")
+
+      // adding high bound
+      legend
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", highColor)
+        .attr("stop-opacity", 1)
+      
+      // adding low bound
+      legend
+        .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", lowColor)
+        .attr("stop-opacity", 1)
+
+      key
+        .append("rect")
+        .attr("width", w - 80)
+        .attr("height", h + 10)
+        .style("fill", "url(#gradient)")
+        .attr("transform", "translate(0,10)")
+
+      var y = d3.scaleLinear().range([h, 0]).domain([min, max])
+      var ydDiff = d3.scaleLinear().range([h, 0]).domain([gDiffMin, gDiffMax])
+
+      var yAxis = d3.axisRight(y)
+      var yAxisgDiff = d3.axisRight(ydDiff)
+
+      key
+        .append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(25,10)")
+        .call(yAxis)
+      
       //get the correct porportion for population size
       var radius = d3.scaleSqrt().domain([0, 1e6]).range([0, 6])
 
-      //adding bubble
-      svg
-        .append("g")
-        .attr("class", "bubble")
-        .selectAll("circle")
-        .data(uState.features)
-        .enter()
-        .append("circle")
-        .attr("id", "bubblemap")
-        .attr("transform", function (d) {
-          return "translate(" + path.centroid(d) + ")"
-        })
-
-      document.getElementById("theil").onclick = function () {
-        console.log("show Choropleth")
-        d3.selectAll("path").style("fill", function (d) {
-          return ramp(d[theil])
-        })
-      }
-
-      document.getElementById("state_pop").onclick = function () {
-        console.log("show bubble map")
-        d3.selectAll("#bubblemap")
-          .attr("fill", "rgba(0, 0, 0, 0.4)")
-          .attr("stroke", "rgba(0,0,0,0.2)")
+      function updateMap(){
+        console.log("updating the map")
+        //remove choropleth 
+        svg
+          .transition()
+          .duration(300)
+          .selectAll(".state")
+          .style("fill","#f5f2f0")
+          .style("stroke","lightgray")
+        
+        //adding bubble
+        svg
+          .append("g")
+          .attr("class", "bubble")
+          .selectAll("circle")
+          .data(uState.features)
+          .enter()
+          .append("circle")
+          .attr("id", "bubblemap")
+          .transition()
+          .duration(300)
+          .attr("transform", function (d) {
+            return "translate(" + path.centroid(d) + ")"
+          })
+          .style("fill", function (d) {
+            return gDiffRamp(d[gdiff])
+          })
+          .attr("stroke", "gray")
           .attr("stroke-width", "0.5px")
           .attr("r", function (d) {
             return radius(d.pop2000)
           })
+        
+        // update the legend scale
+        // remove the old legend
+        d3.selectAll(".legend").remove();
+
+        var w = 100,h = 480
+        var key = d3
+          .select("#chart")
+          .append("svg")
+          .attr("width", w)
+          .attr("height", h)
+          .attr("class", "legend")
+
+        var legend = key
+          .append("defs")
+          .append("svg:linearGradient")
+          .attr("id", "gradient")
+          .attr("x1", "100%")
+          .attr("y1", "0%")
+          .attr("x2", "100%")
+          .attr("y2", "100%")
+          .attr("spreadMethod", "reflect")
+
+        // adding high bound
+        legend
+          .append("stop")
+          .attr('class','start')
+          .attr("offset", "0%")
+          .attr("stop-color",gDiffRamp(gDiffMax))
+          //.attr("stop-color", "steelblue")
+          .attr("stop-opacity", 1)
+        
+        // adding middle point
+        legend
+          .append("stop")
+          .attr("offset", "50%")
+          .attr("stop-color", "white")
+          .attr("stop-opacity", 1)
+        
+        // adding low bound
+        legend
+          .append("stop")
+          .attr('class','end')
+          .attr("offset", "100%")
+          //.attr("stop-color", "orange")
+          .attr("stop-color",gDiffRamp(gDiffMin-0.001))
+          .attr("stop-opacity", 1)
+        
+        // legend
+        //   .append("title")
+        //   .attr("text-anchor","middle")
+        //   .attr('font-size','10pt')
+        //   .attr('color','darkgray')
+        //   .text("gender difference")
+
+        key
+          .append("rect")
+          .attr("width", w - 80)
+          .attr("height", h + 10)
+          .style("fill", "url(#gradient)")
+          .attr("transform", "translate(0,0)")
+        
+        key
+          .append("g")
+          .attr("class", "y axis")
+          .attr("transform", "translate(25,0)")
+          .call(yAxisgDiff)
       }
+  
+      // call the transition 
+      console.log("before");
+      setTimeout(() => { 
+        console.log("after 2 sec call update function"); 
+        updateMap();
+        }, 
+        2000);
 
       //state abbr
       // svg.selectAll("text")
@@ -145,55 +295,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
       //     .attr("text-anchor","middle")
       //     .attr('font-size','6pt')
       //     .attr('color','darkgray')
-
-      //legend
-      var w = 100,
-        h = 480
-      var key = d3
-        .select("#chart")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h)
-        .attr("class", "legend")
-
-      var legend = key
-        .append("defs")
-        .append("svg:linearGradient")
-        .attr("id", "gradient")
-        .attr("x1", "100%")
-        .attr("y1", "0%")
-        .attr("x2", "100%")
-        .attr("y2", "100%")
-        .attr("spreadMethod", "pad")
-
-      legend
-        .append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", highColor)
-        .attr("stop-opacity", 1)
-
-      legend
-        .append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", lowColor)
-        .attr("stop-opacity", 1)
-
-      key
-        .append("rect")
-        .attr("width", w - 80)
-        .attr("height", h + 20)
-        .style("fill", "url(#gradient)")
-        .attr("transform", "translate(0,10)")
-
-      var y = d3.scaleLinear().range([h, 0]).domain([min, max])
-
-      var yAxis = d3.axisRight(y)
-
-      key
-        .append("g")
-        .attr("class", "y axis")
-        .attr("transform", "translate(41,10)")
-        .call(yAxis)
+        
     }
   )
 })
