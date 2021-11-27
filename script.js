@@ -63,7 +63,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
   //create color ramp for gender difference
   var gDiffRamp = d3
     .scaleLinear()
-    .domain([gDiffMin-0.03, 0, gDiffMax])
+    .domain([gDiffMin - 0.03, 0, gDiffMax])
     .range(["orange", "white", "steelblue"])
 
   d3.json(
@@ -161,7 +161,10 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         .attr("transform", "translate(0,10)")
 
       var y = d3.scaleLinear().range([h, 0]).domain([min, max])
-      var ydDiff = d3.scaleLinear().range([h, 0]).domain([gDiffMin-0.02, gDiffMax])
+      var ydDiff = d3
+        .scaleLinear()
+        .range([h, 0])
+        .domain([gDiffMin - 0.02, gDiffMax])
 
       var yAxis = d3.axisRight(y)
       var yAxisgDiff = d3.axisRight(ydDiff)
@@ -211,7 +214,8 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         // remove the old legend
         d3.selectAll(".legend").remove()
 
-        var w = 100, h = 480
+        var w = 100,
+          h = 480
         var key = d3
           .select("#chart")
           .append("svg")
@@ -596,7 +600,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   // state HS dropout rate
   var state1_dropout = data[32].dropout_r
-  var state2_dropout = data[9].dropout_r
+  var state2_dropout = data[33].dropout_r
 
   // state violent crime
   var state1_crime = data[32].crime_violent
@@ -765,20 +769,28 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 75)
     .attr("cy", 75)
-    .attr("r", scale_circle_dropout(state1_dropout))
+    .attr("r", 15)
     .style("fill", "steelblue")
 
-  drop_circle1.transition().duration(2000).attr("r", 150)
+  drop_circle1
+    .transition()
+    .duration(2000)
+    .attr("r", scale_circle_dropout(state1_dropout))
 
-  svgSelection2
+  drop_circle2 = svgSelection2
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
     .append("circle")
     .attr("cx", 225)
     .attr("cy", 75)
-    .attr("r", scale_circle_dropout(state2_dropout))
+    .attr("r", 15)
     .style("fill", "green")
+
+  drop_circle2
+    .transition()
+    .duration(3000)
+    .attr("r", scale_circle_dropout(state2_dropout))
 
   // violent crime comparison
   svgSelection3
