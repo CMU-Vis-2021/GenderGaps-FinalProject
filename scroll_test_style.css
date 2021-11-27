@@ -1,12 +1,21 @@
-/* Team's original CSS from style.css on 11/24 5PM (separate from borrowed template CSS lower in this doc) */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   color: black;
+}
+
+#map_container {
+  height: 600px;
+}
+
+#vis {
+  display: inline-block;
+}
+
+#map_text {
+  display: inline-block;
+  width: 400px;
+  height: 600px;
+  overflow: scroll;
+
 }
 
 path {
@@ -17,7 +26,7 @@ path {
 
 .state {
   stroke-width: 1;
-  stroke: #777777;
+  /* stroke: #777777; */
 }
 
 .state:hover {
@@ -49,18 +58,18 @@ body {
   padding: 10px;
 }
 
-p {
+p{
   color: #777777;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
 }
 
-h4 {
+h4{
   font-weight: 600;
 }
 
-h5 {
+h5{
   font-weight: 400;
 }
 
@@ -71,13 +80,13 @@ div.tooltip {
   min-height: 30px;
   padding: 8px 12px;
   font: 12px sans-serif;
-  background: white;
+  background:white;
   border: 0px;
   border-radius: 5px;
   pointer-events: none;
 }
 
-text.label {
+text.label{
   font-size: 12px;
   width: 200px;
 }
@@ -87,85 +96,11 @@ text.label {
 }
 
 .axis text {
-  font: 12px sans-serif;
+    font: 12px sans-serif;
 }
 
-.axis line,
-.axis path {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-/* Borrowed template CSS added by Rob */
-
-.container {
-  width: 890px;
-}
-
-#graphic {
-  padding-top: 60px;
-}
-
-#sections {
-  position: relative;
-  display: inline-block;
-  width: 250px;
-  top: 0px;
-  z-index: 90;
-  padding-bottom: 200px;
-}
-
-.step {
-  margin-bottom: 200px;
-  font-family: "TiemposTextWeb-Regular", "Georgia";
-  font-size: 16px;
-  line-height: 23px;
-  color: #767678;
-}
-
-#sections .title {
-  font-family: Arial, Helvetica, "san-serif";
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 2px;
-  color: #262626;
-  line-height: 1.2em;
-}
-
-#extra-space {
-  height: 300px;
-}
-
-#vis {
-  display: inline-block;
-  position: fixed;
-  top: 60px;
-  z-index: 1;
-  margin-left: 0;
-  /* height: 600px; */
-  /* width: 600px; */
-  /* background-color: #ddd; */
-}
-
-#vis .title {
-  font-size: 120px;
-  text-anchor: middle;
-}
-
-#vis .sub-title {
-  font-size: 80px;
-  text-anchor: middle;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #666;
-  shape-rendering: crispEdges;
-}
-
-.highlight {
-  fill: #008080;
-  font-weight: bold;
+.axis line, .axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }

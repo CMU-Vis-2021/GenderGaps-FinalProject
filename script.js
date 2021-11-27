@@ -7,6 +7,7 @@ let fetchData = async () => {
   return response.json()
 }
 
+var map_update = false;
 const width = 800
 const height = 500
 const svg = d3
@@ -176,7 +177,9 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
       var radius = d3.scaleSqrt().domain([0, 1e6]).range([0, 6])
 
       function updateMap() {
-        console.log("updating the map")
+        if (!map_update){
+          map_update = true;
+          console.log("updating the map")
         //remove choropleth
         svg
           .transition()
@@ -275,14 +278,19 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("class", "y axis")
           .attr("transform", "translate(25,0)")
           .call(yAxisgDiff)
+
+        }
+        
       }
 
       // call the transition
-      console.log("before")
-      setTimeout(() => {
-        console.log("after 2 sec call update function")
-        updateMap()
-      }, 2000)
+      // console.log("before")
+      // setTimeout(() => {
+      //   console.log("after 2 sec call update function")
+      //   updateMap()
+      // }, 2000)
+
+      document.getElementById("map_text").addEventListener("scroll", updateMap);
 
       //state abbr
       // svg.selectAll("text")
