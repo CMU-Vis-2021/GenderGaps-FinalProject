@@ -61,7 +61,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
   var ramp = d3.scaleLinear().domain([min, max]).range([lowColor, highColor])
 
   //create color ramp for gender difference
-  var gDiffRamp = d3.scaleLinear().domain([gDiffMin, 0, gDiffMax]).range(["orange", "white", "steelblue"])
+  var gDiffRamp = d3.scaleLinear().domain([gDiffMin-0.04, 0, gDiffMax]).range(["orange", "white", "steelblue"])
 
 
   d3.json(
@@ -155,7 +155,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         .attr("transform", "translate(0,10)")
 
       var y = d3.scaleLinear().range([h, 0]).domain([min, max])
-      var ydDiff = d3.scaleLinear().range([h, 0]).domain([gDiffMin, gDiffMax])
+      var ydDiff = d3.scaleLinear().range([h, 0]).domain([gDiffMin-0.02, gDiffMax])
 
       var yAxis = d3.axisRight(y)
       var yAxisgDiff = d3.axisRight(ydDiff)
@@ -229,8 +229,8 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr('class','start')
           .attr("offset", "0%")
-          .attr("stop-color",gDiffRamp(gDiffMax))
-          //.attr("stop-color", "steelblue")
+          //.attr("stop-color",gDiffRamp(gDiffMax))
+          .attr("stop-color", "steelblue")
           .attr("stop-opacity", 1)
         
         // adding middle point
@@ -245,8 +245,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr('class','end')
           .attr("offset", "100%")
-          //.attr("stop-color", "orange")
-          .attr("stop-color",gDiffRamp(gDiffMin-0.001))
+          .attr("stop-color", "orange")
           .attr("stop-opacity", 1)
         
         // legend
