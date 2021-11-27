@@ -61,15 +61,10 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
   var ramp = d3.scaleLinear().domain([min, max]).range([lowColor, highColor])
 
   //create color ramp for gender difference
-<<<<<<< HEAD
-  var gDiffRamp = d3.scaleLinear().domain([gDiffMin-0.04, 0, gDiffMax]).range(["orange", "white", "steelblue"])
-
-=======
   var gDiffRamp = d3
     .scaleLinear()
     .domain([gDiffMin, 0, gDiffMax])
     .range(["orange", "white", "steelblue"])
->>>>>>> refs/remotes/origin/main
 
   d3.json(
     "https://gist.githubusercontent.com/Bradleykingz/3aa5206b6819a3c38b5d73cb814ed470/raw/a476b9098ba0244718b496697c5b350460d32f99/us-states.json",
@@ -241,13 +236,8 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr("class", "start")
           .attr("offset", "0%")
-<<<<<<< HEAD
           //.attr("stop-color",gDiffRamp(gDiffMax))
           .attr("stop-color", "steelblue")
-=======
-          .attr("stop-color", gDiffRamp(gDiffMax))
-          //.attr("stop-color", "steelblue")
->>>>>>> refs/remotes/origin/main
           .attr("stop-opacity", 1)
 
         // adding middle point
@@ -262,12 +252,8 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr("class", "end")
           .attr("offset", "100%")
-<<<<<<< HEAD
-          .attr("stop-color", "orange")
-=======
           //.attr("stop-color", "orange")
           .attr("stop-color", gDiffRamp(gDiffMin - 0.001))
->>>>>>> refs/remotes/origin/main
           .attr("stop-opacity", 1)
 
         // legend
