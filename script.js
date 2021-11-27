@@ -8,6 +8,10 @@ let fetchData = async () => {
 }
 
 var map_update = false;
+// scroll detect 
+var lastScrollTop = 0;
+
+// map size
 const width = 800
 const height = 500
 const svg = d3
@@ -165,7 +169,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
       var ydDiff = d3
         .scaleLinear()
         .range([h, 0])
-        .domain([gDiffMin - 0.02, gDiffMax])
+        .domain([gDiffMin - 0.03, gDiffMax])
 
       var yAxis = d3.axisRight(y)
       var yAxisgDiff = d3.axisRight(ydDiff)
@@ -282,36 +286,87 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("transform", "translate(25,0)")
           .call(yAxisgDiff)
 
-        }
-        
+        } 
+      }
+      function revertMap(){
+        // update the legend scale
+        // remove the old legend
+        d3.selectAll(".legend").remove()
+
+        // remove the bubbles
+        d3.selectAll("#bubblemap").remove()
+
+        // revert the legend
+        var w = 100,
+        h = 480
+      var key = d3
+        .select("#chart")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h)
+        .attr("class", "legend")
+
+      var legend = key
+        .append("defs")
+        .append("svg:linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "100%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%")
+        .attr("spreadMethod", "pad")
+
+      // adding high bound
+      legend
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", highColor)
+        .attr("stop-opacity", 1)
+
+      // adding low bound
+      legend
+        .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", lowColor)
+        .attr("stop-opacity", 1)
+
+      key
+        .append("rect")
+        .attr("width", w - 80)
+        .attr("height", h + 10)
+        .style("fill", "url(#gradient)")
+        .attr("transform", "translate(0,10)")
+
+      key
+        .append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(25,10)")
+        .call(yAxis)
+
+      svg
+        .style("transition", "all 0.2s ease-in-out")
+        .selectAll(".state")
+        .style("stroke", "#666666")
+        .style("fill", function (d) {
+          return ramp(d[theil])
+        })
+
       }
 
-      // call the transition
-      // console.log("before")
-      // setTimeout(() => {
-      //   console.log("after 2 sec call update function")
-      //   updateMap()
-      // }, 2000)
+      document.getElementById("map_text").addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
+        var st = window.pageYOffset || document.getElementById("map_text").scrollTop
+        if (st > lastScrollTop){
+           // downscroll code
+           updateMap();
+           console.log("down");
+        } else {
+           // upscroll code
+           revertMap();
+           console.log("up")
+        }
+        lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+     }, false);
 
-      document.getElementById("map_text").addEventListener("scroll", updateMap);
-
-      //state abbr
-      // svg.selectAll("text")
-      //     .data(uState.features)
-      //     .enter()
-      //     .append("svg:text")
-      //     .text(function(d){
-      //         return d.state_id;
-      //     })
-      //     .attr("x", function(d){
-      //         return path.centroid(d)[0];
-      //     })
-      //     .attr("y", function(d){
-      //         return  path.centroid(d)[1];
-      //     })
-      //     .attr("text-anchor","middle")
-      //     .attr('font-size','6pt')
-      //     .attr('color','darkgray')
     }
   )
 })
