@@ -52,11 +52,11 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
   let gDiffMax = d3.max(data, function (d, i) {
     return d[gdiff]
   })
-  console.log("gdiff max is: " + gDiffMax)
+  //console.log("gdiff max is: " + gDiffMax)
   let gDiffMin = d3.min(data, function (d, i) {
     return d[gdiff]
   })
-  console.log("gdiff min is: " + gDiffMin)
+  //console.log("gdiff min is: " + gDiffMin)
 
   //color ramp for thiel index
   var ramp = d3.scaleLinear().domain([min, max]).range([lowColor, highColor])
@@ -64,7 +64,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
   //create color ramp for gender difference
   var gDiffRamp = d3
     .scaleLinear()
-    .domain([gDiffMin, 0, gDiffMax])
+    .domain([gDiffMin - 0.03, 0, gDiffMax])
     .range(["orange", "white", "steelblue"])
 
   d3.json(
@@ -162,7 +162,10 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         .attr("transform", "translate(0,10)")
 
       var y = d3.scaleLinear().range([h, 0]).domain([min, max])
-      var ydDiff = d3.scaleLinear().range([h, 0]).domain([gDiffMin, gDiffMax])
+      var ydDiff = d3
+        .scaleLinear()
+        .range([h, 0])
+        .domain([gDiffMin - 0.02, gDiffMax])
 
       var yAxis = d3.axisRight(y)
       var yAxisgDiff = d3.axisRight(ydDiff)
@@ -239,8 +242,8 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr("class", "start")
           .attr("offset", "0%")
-          .attr("stop-color", gDiffRamp(gDiffMax))
-          //.attr("stop-color", "steelblue")
+          //.attr("stop-color",gDiffRamp(gDiffMax))
+          .attr("stop-color", "steelblue")
           .attr("stop-opacity", 1)
 
         // adding middle point
@@ -255,12 +258,12 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr("class", "end")
           .attr("offset", "100%")
-          //.attr("stop-color", "orange")
-          .attr("stop-color", gDiffRamp(gDiffMin - 0.001))
+          .attr("stop-color", "orange")
+          //.attr("stop-color", gDiffRamp(gDiffMin - 0.001))
           .attr("stop-opacity", 1)
 
         // legend
-        //   .append("title")
+        //   .append("text")
         //   .attr("text-anchor","middle")
         //   .attr('font-size','10pt')
         //   .attr('color','darkgray')
@@ -590,7 +593,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   // state names
   var state1_name = data[32].state_id
-  var state2_name = data[9].state_id
+  var state2_name = data[33].state_id
 
   // state GINI index
   var state1_gini = data[32].gini
@@ -598,7 +601,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   // state HS dropout rate
   var state1_dropout = data[32].dropout_r
-  var state2_dropout = data[9].dropout_r
+  var state2_dropout = data[33].dropout_r
 
   // state violent crime
   var state1_crime = data[32].crime_violent
@@ -608,6 +611,19 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   var state1_single = data[32].cs_fam_wkidsinglemom
   var state2_single = data[9].cs_fam_wkidsinglemom
 
+  // additional variables for new case study
+  // employment rate, by sex, for NY and NC, for 1st quintiile of parent incomes
+
+  var state1_m_emp = data[32].w2_pos_30_q1_m
+  var state2_m_emp = data[33].w2_pos_30_q1_m
+
+  var state1_f_emp = data[32].w2_pos_30_q1_f
+  var state2_f_emp = data[33].w2_pos_30_q1_f
+
+  // fraction of black residents
+  var state1_fracB = data[32].cs_race_bla
+  var state2_fracB = data[33].cs_race_bla
+
   // CREATE SCALES FOR CIRCLE COMPARISONS
 
   // get min and max for each comparision
@@ -615,8 +631,13 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   var dropout_r = "dropout_r"
   var crime_violent = "crime_violent"
   var cs_fam_wkidsinglemom = "cs_fam_wkidsinglemom"
+  var w2_pos_30_q1_m = "w2_pos_30_q1_m"
+  var w2_pos_30_q1_f = "w2_pos_30_q1_f"
+  var cs_race_bla = "cs_race_bla"
 
   // CREATE MIN MAX FOR SCALES
+
+  // employment rate min max is just 0 to 1
 
   // GINI min max
   let max_gini = d3.max(data, function (d, i) {
@@ -650,7 +671,52 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     return d[cs_fam_wkidsinglemom]
   })
 
+  // employment rate min max male
+  let max_w2_pos_30_q1_m = d3.max(data, function (d, i) {
+    return d[w2_pos_30_q1_m]
+  })
+  let min_w2_pos_30_q1_m = d3.min(data, function (d, i) {
+    return d[w2_pos_30_q1_m]
+  })
+
+  // employment rate min max female
+  let max_w2_pos_30_q1_f = d3.max(data, function (d, i) {
+    return d[w2_pos_30_q1_f]
+  })
+  let min_w2_pos_30_q1_f = d3.min(data, function (d, i) {
+    return d[w2_pos_30_q1_f]
+  })
+
+  // fraction black residents
+  let max_fracB = d3.max(data, function (d, i) {
+    return d[cs_race_bla]
+  })
+  let min_fracB = d3.min(data, function (d, i) {
+    return d[cs_race_bla]
+  })
+
   // set scales
+
+  // employment rate scale male
+  var scale_circle_emp_m = d3
+    .scaleSqrt()
+    .domain([min_w2_pos_30_q1_m, max_w2_pos_30_q1_m])
+    .range([0, 75])
+
+  // employment rate scale female
+  var scale_circle_emp_f = d3
+    .scaleSqrt()
+    .domain([min_w2_pos_30_q1_f, max_w2_pos_30_q1_f])
+    .range([0, 75])
+
+  // alt employment rate scale (for both m and f)
+  var scale_circle_emp = d3.scaleSqrt().domain([0, 1]).range([0, 80])
+
+  // fraction of black residents scale
+  var scale_circle_fracB = d3
+    .scaleSqrt()
+    .domain([min_fracB, max_fracB])
+    .range([0, 75])
 
   // gini scale
   var scale_circle_gini = d3
@@ -670,6 +736,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .domain([min_crime_violent, max_crime_violent])
     .range([0, 75])
 
+  // single parent scale
   var scale_circle_cs_fam_wkidsinglemom = d3
     .scaleSqrt()
     .domain([min_cs_fam_wkidsinglemom, max_cs_fam_wkidsinglemom])
@@ -690,32 +757,36 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   var svgSelection1 = divSelection1
     .append("svg")
     .attr("width", 600)
-    .attr("height", 200)
+    .attr("height", 300)
 
   var svgSelection2 = divSelection2
     .append("svg")
     .attr("width", 600)
-    .attr("height", 200)
+    .attr("height", 300)
 
   var svgSelection3 = divSelection3
     .append("svg")
     .attr("width", 600)
-    .attr("height", 200)
+    .attr("height", 300)
 
   var svgSelection4 = divSelection4
     .append("svg")
     .attr("width", 600)
-    .attr("height", 200)
+    .attr("height", 300)
 
-  // TESTING TEXT
+  // adding circles to the SVGs in each div
+
+  // y locations for two related rows of circles
+  var circ_y1 = 75
+  var circ_y2 = 225
 
   var g1 = svgSelection1.append("g").attr("transform", function (d, i) {
     return "translate(0,0)"
   })
 
-  // adding circles the SVGs in each div
+  // Employment rate comparison
 
-  // GINI comparison
+  // state 1 (NY)
   g1
     // svgSelection1
     // .selectAll("circle")
@@ -723,18 +794,18 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .enter()
     .append("circle")
     .attr("cx", 75)
-    .attr("cy", 75)
-    .attr("r", scale_circle_gini(state1_gini))
+    .attr("cy", circ_y1)
+    .attr("r", scale_circle_emp(state1_m_emp))
     .style("fill", "steelblue")
     .append("text")
 
   g1.append("text")
     .attr("x", 75)
-    .attr("y", 75)
+    .attr("y", circ_y1)
     // .attr("stroke", "#fff")
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
-    .text("NY")
+    .text("NY males")
 
   var g2 = svgSelection1.append("g").attr("transform", function (d, i) {
     return "translate(0,0)"
@@ -747,17 +818,63 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .enter()
     .append("circle")
     .attr("cx", 225)
-    .attr("cy", 75)
-    .attr("r", scale_circle_gini(state2_gini))
-    .style("fill", "green")
+    .attr("cy", circ_y1)
+    .attr("r", scale_circle_emp(state1_f_emp))
+    .style("fill", "steelblue")
 
   g2.append("text")
     .attr("x", 225)
-    .attr("y", 75)
+    .attr("y", circ_y1)
     // .attr("stroke", "#fff")
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
-    .text("FL")
+    .text("NY Females")
+
+  var g3 = svgSelection1.append("g").attr("transform", function (d, i) {
+    return "translate(0,0)"
+  })
+
+  // state 2 (NC)
+  g3
+    // svgSelection1
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
+    .append("circle")
+    .attr("cx", 75)
+    .attr("cy", circ_y2)
+    .attr("r", scale_circle_emp(state2_m_emp))
+    .style("fill", "green")
+    .append("text")
+
+  g3.append("text")
+    .attr("x", 75)
+    .attr("y", circ_y2)
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text("NC males")
+
+  var g4 = svgSelection1.append("g").attr("transform", function (d, i) {
+    return "translate(0,0)"
+  })
+
+  g4
+    // svgSelection1
+    // .selectAll("circle")
+    // .data(test_radius)
+    // .enter()
+    .append("circle")
+    .attr("cx", 225)
+    .attr("cy", circ_y2)
+    .attr("r", scale_circle_emp(state2_f_emp))
+    .style("fill", "green")
+
+  g4.append("text")
+    .attr("x", 225)
+    .attr("y", circ_y2)
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text("NC Females")
 
   // HS dropout comparison
   drop_circle1 = svgSelection2
@@ -767,60 +884,57 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("circle")
     .attr("cx", 75)
     .attr("cy", 75)
+    .attr("r", 15)
+    .style("fill", "steelblue")
+
+  drop_circle1
+    .transition()
+    .duration(2000)
     .attr("r", scale_circle_dropout(state1_dropout))
-    .style("fill", "steelblue")
 
-  drop_circle1.transition().duration(2000).attr("r", 150)
-
-  svgSelection2
+  drop_circle2 = svgSelection2
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
     .append("circle")
     .attr("cx", 225)
     .attr("cy", 75)
+    .attr("r", 15)
+    .style("fill", "green")
+
+  drop_circle2
+    .transition()
+    .duration(3000)
     .attr("r", scale_circle_dropout(state2_dropout))
-    .style("fill", "green")
 
-  // violent crime comparison
-  svgSelection3
+  // percentage black population
+  race_circle1 = svgSelection3
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
     .append("circle")
     .attr("cx", 75)
     .attr("cy", 75)
-    .attr("r", scale_circle_crime_violent(state1_crime))
+    .attr("r", 15)
     .style("fill", "steelblue")
 
-  svgSelection3
+  race_circle1
+    .transition()
+    .duration(2000)
+    .attr("r", scale_circle_fracB(state1_fracB))
+
+  race_circle2 = svgSelection3
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
     .append("circle")
     .attr("cx", 225)
     .attr("cy", 75)
-    .attr("r", scale_circle_crime_violent(state2_crime))
+    .attr("r", 15)
     .style("fill", "green")
 
-  // single parent family comparison
-  svgSelection4
-    // .selectAll("circle")
-    // .data(test_radius)
-    // .enter()
-    .append("circle")
-    .attr("cx", 75)
-    .attr("cy", 75)
-    .attr("r", scale_circle_cs_fam_wkidsinglemom(state1_single))
-    .style("fill", "steelblue")
-
-  svgSelection4
-    // .selectAll("circle")
-    // .data(test_radius)
-    // .enter()
-    .append("circle")
-    .attr("cx", 225)
-    .attr("cy", 75)
-    .attr("r", scale_circle_cs_fam_wkidsinglemom(state2_single))
-    .style("fill", "green")
+  race_circle2
+    .transition()
+    .duration(3000)
+    .attr("r", scale_circle_fracB(state2_fracB))
 })
