@@ -63,7 +63,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
   //create color ramp for gender difference
   var gDiffRamp = d3
     .scaleLinear()
-    .domain([gDiffMin, 0, gDiffMax])
+    .domain([gDiffMin-0.03, 0, gDiffMax])
     .range(["orange", "white", "steelblue"])
 
   d3.json(
@@ -212,8 +212,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         // remove the old legend
         d3.selectAll(".legend").remove()
 
-        var w = 100,
-          h = 480
+        var w = 100, h = 480
         var key = d3
           .select("#chart")
           .append("svg")
@@ -252,8 +251,8 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr("class", "end")
           .attr("offset", "100%")
-          //.attr("stop-color", "orange")
-          .attr("stop-color", gDiffRamp(gDiffMin - 0.001))
+          .attr("stop-color", "orange")
+          //.attr("stop-color", gDiffRamp(gDiffMin - 0.001))
           .attr("stop-opacity", 1)
 
         // legend
