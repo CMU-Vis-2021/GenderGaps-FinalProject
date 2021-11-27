@@ -51,11 +51,11 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
   let gDiffMax = d3.max(data, function (d, i) {
     return d[gdiff]
   })
-  console.log("gdiff max is: " + gDiffMax)
+  //console.log("gdiff max is: " + gDiffMax)
   let gDiffMin = d3.min(data, function (d, i) {
     return d[gdiff]
   })
-  console.log("gdiff min is: " + gDiffMin)
+  //console.log("gdiff min is: " + gDiffMin)
 
   //color ramp for thiel index
   var ramp = d3.scaleLinear().domain([min, max]).range([lowColor, highColor])
@@ -176,7 +176,6 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
       var radius = d3.scaleSqrt().domain([0, 1e6]).range([0, 6])
 
       function updateMap() {
-        console.log("updating the map")
         //remove choropleth
         svg
           .transition()
@@ -256,7 +255,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("stop-opacity", 1)
 
         // legend
-        //   .append("title")
+        //   .append("text")
         //   .attr("text-anchor","middle")
         //   .attr('font-size','10pt')
         //   .attr('color','darkgray')
@@ -278,6 +277,14 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
 
       // call the transition
       console.log("before")
+
+      // window.onscroll = function() {
+      //   console.log("on scroll");
+      //   updateMap()
+      //   return
+      // };
+      //document.getElementById("vis").addEventListener("scroll", updateMap);
+
       setTimeout(() => {
         console.log("after 2 sec call update function")
         updateMap()
