@@ -187,6 +187,10 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         if (!map_update){
           map_update = true;
           console.log("updating the map")
+
+        //update graph title
+        document.getElementById("mapTitle").innerHTML = "U.S. States Population Size and Gender Gap";
+
         //remove choropleth
         svg
           .transition()
@@ -288,6 +292,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
 
         } 
       }
+      //revert the map to choropleth
       function revertMap(){
         // update the legend scale
         // remove the old legend
@@ -295,6 +300,9 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
 
         // remove the bubbles
         d3.selectAll("#bubblemap").remove()
+
+        //revert graph title
+        document.getElementById("mapTitle").innerHTML = "U.S. States Regional Economic Inequality";
 
         // revert the legend
         var w = 100,

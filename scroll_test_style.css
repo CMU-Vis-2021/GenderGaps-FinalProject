@@ -2,6 +2,13 @@ h1, h2, h3, h4, h5, h6 {
   color: black;
 }
 
+h3{
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: large;
+  font-weight: 400;
+}
+
 #map_container {
   height: 600px;
 }
@@ -13,20 +20,20 @@ h1, h2, h3, h4, h5, h6 {
 #map_text {
   display: inline-block;
   width: 400px;
-  height: 600px;
+  height: 550px;
   overflow: scroll;
+  margin-right: 20px;
 
 }
 
-path {
+.path {
   stroke: black;
-  stroke-width: 0.5px;
+  stroke-width: 2;
   fill: black;
 }
 
 .state {
   stroke-width: 1;
-  /* stroke: #777777; */
 }
 
 .state:hover {
@@ -56,6 +63,7 @@ path {
 body {
   font-family: Arial, sans-serif;
   padding: 10px;
+  margin: 10px;
 }
 
 p{
