@@ -354,7 +354,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
       }
 
       document.getElementById("map_text").addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
-        var st = window.pageYOffset || document.getElementById("map_text").scrollTop
+        var st = document.getElementById("map_text").scrollTop//window.pageYOffset || document.getElementById("map_text").scrollTop
         if (st > lastScrollTop){
            // downscroll code
            updateMap();
