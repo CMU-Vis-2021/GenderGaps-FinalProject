@@ -1,5 +1,32 @@
 h1, h2, h3, h4, h5, h6 {
-  color: black;
+  color: rgba(41, 41, 41, 1);
+  font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+h1 {
+  text-transform: capitalize;
+  font-size: 46px;
+  max-width: 60vw;
+  color: rgba(41, 41, 41, 1);
+  font-weight: 700;
+}
+
+h5{
+  color: #757575;
+  font-weight: 400;
+  line-height: 20px;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+h3{
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0;
+  font-weight: 500;
+  margin-top: 1.72em;
 }
 
 #map_container {
@@ -13,20 +40,20 @@ h1, h2, h3, h4, h5, h6 {
 #map_text {
   display: inline-block;
   width: 400px;
-  height: 600px;
+  height: 550px;
   overflow: scroll;
+  margin-right: 20px;
 
 }
 
-path {
+.path {
   stroke: black;
-  stroke-width: 0.5px;
+  stroke-width: 2;
   fill: black;
 }
 
 .state {
   stroke-width: 1;
-  /* stroke: #777777; */
 }
 
 .state:hover {
@@ -54,23 +81,28 @@ path {
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 10px;
+  margin: 20px;
 }
 
 p{
-  color: #777777;
-  font-size: 14px;
+  color: rgba(41, 41, 41, 1);
+  font-size: 18px;
+  letter-spacing: -0.003em;
+  font-family: charter, Georgia, Cambria, "Times New Roman", Times, serif;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 28px;
 }
 
 h4{
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 18px;
 }
 
-h5{
-  font-weight: 400;
+#chart{
+  margin-left: 20px;
+  padding-bottom: 30px;
 }
 
 div.tooltip {

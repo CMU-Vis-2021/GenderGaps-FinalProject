@@ -12,8 +12,8 @@ var map_update = false;
 var lastScrollTop = 0;
 
 // map size
-const width = 800
-const height = 500
+const width = 730
+const height = 480
 const svg = d3
   .select("#chart")
   .append("svg")
@@ -105,7 +105,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             .style("top", d3.event.pageY + "px")
             .text(
               () =>
-                `${d.state_id}'s Theil Index : ${d[theil]}; Gender Difference : ${d[gdiff]}`
+                `${d.state_id}'s Theil Index : ${d[theil]}`
             )
         })
 
@@ -187,13 +187,36 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         if (!map_update){
           map_update = true;
           console.log("updating the map")
-        //remove choropleth
+
+        //update graph title
+        document.getElementById("mapTitle").innerHTML = "U.S. States Population Size and Gender Gap";
+
+        //remove choropleth fill
         svg
           .transition()
           .duration(300)
           .selectAll(".state")
           .style("fill", "#f5f2f0")
           .style("stroke", "lightgray")
+
+        svg.selectAll(".state")
+          .on("mouseover", function (d) {
+            d3.select(this)
+              .style("opacity", 1)
+              .style("fill", "#f5f2f0")
+          })
+
+          .on("mousemove", function (d) {
+            tooltip
+               .transition()
+               .duration(100)
+               .style("opacity", 0)
+               //.text("")
+          })
+  
+          .on("mouseout", function (d, i) {
+            //tooltip.transition().duration(200).style("opacity", 0)
+          })
 
         //adding bubble
         svg
@@ -218,6 +241,25 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             return radius(d.pop2000)
           })
 
+          svg.selectAll("#bubblemap")
+            .on("mouseover", function(d){
+              d3.select(this)
+                  .style("fill", tinycolor(gDifframp(d[gdiff])).darken(25).toString())
+                  .style("cursor", "pointer")
+            })
+            .on("mousemove", function (d) {
+                tooltip
+                  .transition()
+                  .duration(200)
+                  .style("opacity", 0.9)
+                  .style("left", d3.event.pageX + "px")
+                  .style("top", d3.event.pageY + "px")
+                  .text(
+                    () =>
+                      `${d.state_id}'s Gender Difference score: ${d[gdiff]}`
+                  )
+        })
+    
         // update the legend scale
         // remove the old legend
         d3.selectAll(".legend").remove()
@@ -246,7 +288,6 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr("class", "start")
           .attr("offset", "0%")
-          //.attr("stop-color",gDiffRamp(gDiffMax))
           .attr("stop-color", "steelblue")
           .attr("stop-opacity", 1)
 
@@ -263,7 +304,6 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("class", "end")
           .attr("offset", "100%")
           .attr("stop-color", "orange")
-          //.attr("stop-color", gDiffRamp(gDiffMin - 0.001))
           .attr("stop-opacity", 1)
 
         // legend
@@ -288,6 +328,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
 
         } 
       }
+      //revert the map to choropleth
       function revertMap(){
         // update the legend scale
         // remove the old legend
@@ -296,9 +337,11 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         // remove the bubbles
         d3.selectAll("#bubblemap").remove()
 
+        //revert graph title
+        document.getElementById("mapTitle").innerHTML = "U.S. States Regional Economic Inequality";
+
         // revert the legend
-        var w = 100,
-        h = 480
+        var w = 100, h = 480
       var key = d3
         .select("#chart")
         .append("svg")
@@ -349,6 +392,34 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         .style("stroke", "#666666")
         .style("fill", function (d) {
           return ramp(d[theil])
+        })
+
+        .on("mousemove", function (d) {
+          tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0.9)
+            .style("left", d3.event.pageX + "px")
+            .style("top", d3.event.pageY + "px")
+            .text(
+              () =>
+                `${d.state_id}'s Theil Index : ${d[theil]}`
+            )
+        })
+
+        .on("mouseover", function (d) {
+          d3.select(this)
+            .style("opacity", 1)
+            .style("fill", tinycolor(ramp(d[theil])).darken(25).toString())
+            .style("cursor", "pointer")
+        })
+
+        .on("mouseout", function (d, i) {
+          d3.selectAll(".state").transition().duration(100).style("opacity", 1)
+          d3.select(this).style("fill", function (d) {
+            return ramp(d[theil])
+          })
+          tooltip.transition().duration(200).style("opacity", 0)
         })
 
       }
