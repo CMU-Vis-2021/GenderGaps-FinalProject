@@ -77,7 +77,8 @@ h3{
 }
 
 body {
-  font-family: Arial, sans-serif;
+  /* font-family: Arial, sans-serif; */
+  font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 10px;
   margin: 10px;
 }
