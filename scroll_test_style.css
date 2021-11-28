@@ -2,6 +2,22 @@ h1, h2, h3, h4, h5, h6 {
   color: black;
 }
 
+h1 {
+  text-transform: capitalize;
+  font-size: 46px;
+  max-width: 60vw;
+  color: rgba(41, 41, 41, 1);
+  font-weight: 700;
+}
+
+h5{
+  color: #757575;
+  font-weight: 400;
+  line-height: 20px;
+  font-size: 14px;
+  word-break: break-all;
+}
+
 h3{
   margin-top: 30px;
   margin-bottom: 10px;
