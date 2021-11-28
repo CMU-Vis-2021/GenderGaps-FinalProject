@@ -291,7 +291,6 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
       function revertMap(){
         // update the legend scale
         // remove the old legend
-        map_update = false
         d3.selectAll(".legend").remove()
 
         // remove the bubbles
@@ -362,6 +361,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
            console.log("down");
         } else {
            // upscroll code
+           map_update = false;
            revertMap();
            console.log("up")
         }
