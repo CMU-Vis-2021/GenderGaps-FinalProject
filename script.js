@@ -333,13 +333,13 @@ var Lsvg = d3
 
 var labelx = "Parent Income Percentile"
 
-var L2svg = d3
-  .select("#scatterplot2")
-  .append("svg")
-  .attr("width", Lwidth + margin.left + margin.right)
-  .attr("height", Lheight + margin.top + margin.bottom)
-  .append("g")
-  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+// var L2svg = d3
+//   .select("#scatterplot2")
+//   .append("svg")
+//   .attr("width", Lwidth + margin.left + margin.right)
+//   .attr("height", Lheight + margin.top + margin.bottom)
+//   .append("g")
+//   .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 // //Read the data
 d3.csv("gender_nat.csv", function (data) {
@@ -481,15 +481,40 @@ d3.csv("gender_nat.csv", function (data) {
     .style("font-size", "15px")
     .attr("alignment-baseline", "middle")
 
-  //scatterplot 2
-  // // Add X axis
-  var x2 = d3.scaleLinear().domain([0, 100]).range([0, Lwidth])
-  L2svg.append("g")
+
+//update function
+
+// var inter = setInterval(function() {
+//   updateScatter();
+// }, 5000); 
+
+setTimeout(() => {
+  updateScatter()
+}, 2000)
+
+    function updateScatter(data){
+      console.log("making it into function")
+      // Update our scales
+      // // Add X axis
+  var x = d3.scaleLinear().domain([0, 100]).range([0, Lwidth])
+  Lsvg
+      .selectAll("dot")
+      .transition()
+      .duration(200)
+      .attr("cy", function(d) {
+        return d.w2_pos_30_m;
+      })
+      console.log("data changed")
+
+  Lsvg
+    .select("#linechart")
+    .append("svg")
+    var xAxis = Lsvg.append("g")
     .attr("transform", "translate(0," + Lheight + ")")
-    .call(d3.axisBottom(x2))
+    .call(d3.axisBottom(x))
 
   // // Add Y axis
-  var y2 = d3
+  var y = d3
     .scaleLinear()
     .domain([
       0.5,
@@ -498,92 +523,155 @@ d3.csv("gender_nat.csv", function (data) {
       }),
     ])
     .range([Lheight, 0])
-  L2svg.append("g").call(d3.axisLeft(y2))
+  var yAxis = Lsvg.append("g").call(d3.axisLeft(y))
+    
+      // // Update our axes
+      xAxis.call(d3.axisBottom(x));
+      yAxis.call(d3.axisLeft(y)).transition();
+    
+      // Update our circles
+      var circles = Lsvg.selectAll("circle")
+          .data(data);
+    
+      circles.exit().remove()
+      console.log("circles removed");
+    
+      circles
+          .attr("cx", function(d){ return x(d.par_pctile) })
+          .attr("cy", function(d){ return y(d.w2_pos_30_m) })
+    
+      circles.enter()
+          .append("circle")
+              .attr("cx", function (d) {return x(d.par_pctile)})
+              .attr("cy", function (d) {return y(d.w2_pos_30_f)})
+              .attr("r", 3.5)
+              .attr("fill", "pink");
 
-  // Add the scatterplot
+        circles.enter()
+            .append("circle")
+                  .attr("cx", function (d) {return x(d.par_pctile)})
+                  .attr("cy", function (d) {return y(d.w2_pos_30_m)})
+                  .attr("r", 3.5)
+                  .attr("fill", "blue");
 
-  //female dots added
-  L2svg.selectAll("dot")
-    .data(data)
-    .enter()
-    .append("circle")
-    .style("fill", "pink")
-    .attr("r", 3.5)
-    .attr("cx", function (d) {
-      return x2(d.par_pctile)
-    })
-    .attr("cy", function (d) {
-      return y2(d.w2_pos_30_f)
-    })
+      Lsvg.transition().duration(500);
+      console.log("made it to the end");
+    }
 
-  //male dots added
-  L2svg.selectAll("dot")
-    .data(data)
-    .enter()
-    .append("circle")
-    .style("fill", "blue")
-    .attr("r", 3.5)
-    .attr("cx", function (d) {
-      return x2(d.par_pctile)
-    })
-    .attr("cy", function (d) {
-      return y2(d.w2_pos_30_m)
-    })
+  
 
-  //x axis label
-  L2svg.append("text")
-    .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("x", Lwidth - 110)
-    .attr("y", Lheight + 30)
-    .text("Parent Income Percentile")
+  //scatterplot 2
 
-  //y-axis label
-  L2svg.append("text")
-    .attr("class", "y label")
-    .attr("text-anchor", "end")
-    .attr("y", -60)
-    .attr("x", -120)
-    .attr("dy", ".75em")
-    .attr("transform", "rotate(-90)")
-    .text("Percent(decimal) employed")
 
-  //chart title label
-  L2svg.append("text")
-    .attr("class", "x label")
-    .attr("text-anchor", "end")
-    .attr("y", Lheight - 560)
-    .attr("x", Lwidth - 190)
-    .text(
-      "Percent Employed of 30 year olds from Varying Parent Income Percentiles"
-    )
 
-  L2svg.append("circle")
-    .attr("cx", 20)
-    .attr("cy", -20)
-    .attr("r", 6)
-    .style("fill", "blue")
 
-  L2svg.append("circle")
-    .attr("cx", 20)
-    .attr("cy", 10)
-    .attr("r", 6)
-    .style("fill", "pink")
-
-  L2svg.append("text")
-    .attr("x", 40)
-    .attr("y", -20)
-    .text("Male")
-    .style("font-size", "15px")
-    .attr("alignment-baseline", "middle")
-
-  L2svg.append("text")
-    .attr("x", 40)
-    .attr("y", 10)
-    .text("Female")
-    .style("font-size", "15px")
-    .attr("alignment-baseline", "middle")
+  // function updateScatter(data){
+  //   // // Add X axis
+  //   var x2 = d3.scaleLinear().domain([0, 100]).range([0, Lwidth])
+  //   L2svg.append("g")
+  //     .attr("transform", "translate(0," + Lheight + ")")
+  //     .call(d3.axisBottom(x2))
+  
+  //   // // Add Y axis
+  //   var y2 = d3
+  //     .scaleLinear()
+  //     .domain([
+  //       0.5,
+  //       d3.max(data, function (d) {
+  //         return +d.w2_pos_30_m
+  //       }),
+  //     ])
+  //     .range([Lheight, 0])
+  //   L2svg.append("g").call(d3.axisLeft(y2))
+  
+  //   // Add the scatterplot
+  
+  //   //female dots added
+  //   L2svg.selectAll("dot")
+  //     .data(data)
+  //     .enter()
+  //     .append("circle")
+  //     .style("fill", "pink")
+  //     .attr("r", 3.5)
+  //     .attr("cx", function (d) {
+  //       return x2(d.par_pctile)
+  //     })
+  //     .attr("cy", function (d) {
+  //       return y2(d.w2_pos_30_f)
+  //     })
+  
+  //   //male dots added
+  //   L2svg.selectAll("dot")
+  //     .data(data)
+  //     .enter()
+  //     .append("circle")
+  //     .style("fill", "blue")
+  //     .attr("r", 3.5)
+  //     .attr("cx", function (d) {
+  //       return x2(d.par_pctile)
+  //     })
+  //     .attr("cy", function (d) {
+  //       return y2(d.w2_pos_30_m)
+  //     })
+  
+  //   //x axis label
+  //   L2svg.append("text")
+  //     .attr("class", "x label")
+  //     .attr("text-anchor", "end")
+  //     .attr("x", Lwidth - 110)
+  //     .attr("y", Lheight + 30)
+  //     .text("Parent Income Percentile")
+  
+  //   //y-axis label
+  //   L2svg.append("text")
+  //     .attr("class", "y label")
+  //     .attr("text-anchor", "end")
+  //     .attr("y", -60)
+  //     .attr("x", -120)
+  //     .attr("dy", ".75em")
+  //     .attr("transform", "rotate(-90)")
+  //     .text("Percent(decimal) employed")
+  
+  //   //chart title label
+  //   L2svg.append("text")
+  //     .attr("class", "x label")
+  //     .attr("text-anchor", "end")
+  //     .attr("y", Lheight - 560)
+  //     .attr("x", Lwidth - 190)
+  //     .text(
+  //       "Percent Employed of 30 year olds from Varying Parent Income Percentiles"
+  //     )
+  
+  //   L2svg.append("circle")
+  //     .attr("cx", 20)
+  //     .attr("cy", -20)
+  //     .attr("r", 6)
+  //     .style("fill", "blue")
+  
+  //   L2svg.append("circle")
+  //     .attr("cx", 20)
+  //     .attr("cy", 10)
+  //     .attr("r", 6)
+  //     .style("fill", "pink")
+  
+  //   L2svg.append("text")
+  //     .attr("x", 40)
+  //     .attr("y", -20)
+  //     .text("Male")
+  //     .style("font-size", "15px")
+  //     .attr("alignment-baseline", "middle")
+  
+  //   L2svg.append("text")
+  //     .attr("x", 40)
+  //     .attr("y", 10)
+  //     .text("Female")
+  //     .style("font-size", "15px")
+  //     .attr("alignment-baseline", "middle")
+  //   }
 })
+
+
+
 
 // ROB ADDING CIRCLES ----------------------------------------
 
