@@ -1,4 +1,9 @@
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: rgba(41, 41, 41, 1);
   font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
@@ -11,7 +16,7 @@ h1 {
   font-weight: 700;
 }
 
-h5{
+h5 {
   color: #757575;
   font-weight: 400;
   line-height: 20px;
@@ -19,7 +24,7 @@ h5{
   word-break: break-all;
 }
 
-h3{
+h3 {
   margin-top: 30px;
   margin-bottom: 10px;
   font-size: 20px;
@@ -43,7 +48,6 @@ h3{
   height: 550px;
   overflow: scroll;
   margin-right: 20px;
-
 }
 
 .path {
@@ -86,7 +90,7 @@ body {
   margin: 20px;
 }
 
-p{
+p {
   color: rgba(41, 41, 41, 1);
   font-size: 18px;
   letter-spacing: -0.003em;
@@ -95,12 +99,12 @@ p{
   line-height: 28px;
 }
 
-h4{
+h4 {
   font-weight: 500;
   font-size: 18px;
 }
 
-#chart{
+#chart {
   margin-left: 20px;
   padding-bottom: 30px;
 }
@@ -112,13 +116,13 @@ div.tooltip {
   min-height: 30px;
   padding: 8px 12px;
   font: 12px sans-serif;
-  background:white;
+  background: white;
   border: 0px;
   border-radius: 5px;
   pointer-events: none;
 }
 
-text.label{
+text.label {
   font-size: 12px;
   width: 200px;
 }
@@ -128,42 +132,40 @@ text.label{
 }
 
 .axis text {
-    font: 12px sans-serif;
+  font: 12px sans-serif;
 }
 
-.axis line, .axis path {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
+.axis line,
+.axis path {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
 }
 
-#two_scatterplots{
+#two_scatterplots {
   display: inline-block;
   position: relative;
 }
 
-#linechart{
+#linechart {
   position: absolute;
   transition-duration: 0.5s;
   background-color: white;
-  
 }
 
 .opaque {
   opacity: 0;
 }
 
-#scatterplot{
+#scatterplot {
   position: inherit;
   background-color: white;
   top: -480px;
 }
 
-
 #scatterplot_container {
   height: 600px;
 }
-
 
 #scatter_text {
   display: inline-block;
@@ -171,9 +173,23 @@ text.label{
   height: 550px;
   overflow: scroll;
   margin-right: 20px;
-
 }
 
+/* Case study with circles */
 
+#case_study {
+  margin-top: 50px;
+}
 
+.case_text {
+  display: inline-block;
+  width: 400px;
+  height: 300px;
+  overflow: scroll;
+  margin-right: 75px;
+  margin-top: 50px;
+}
 
+.case-vis {
+  display: inline-block;
+}

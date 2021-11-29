@@ -7,9 +7,9 @@ let fetchData = async () => {
   return response.json()
 }
 
-var map_update = false;
-// scroll detect 
-var lastScrollTop = 0;
+var map_update = false
+// scroll detect
+var lastScrollTop = 0
 
 // map size
 const width = 800
@@ -184,44 +184,118 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
       var radius = d3.scaleSqrt().domain([0, 1e6]).range([0, 6])
 
       function updateMap() {
-        if (!map_update){
-          map_update = true;
+        if (!map_update) {
+          map_update = true
           console.log("updating the map")
-        //remove choropleth
-        svg
-          .transition()
-          .duration(300)
-          .selectAll(".state")
-          .style("fill", "#f5f2f0")
-          .style("stroke", "lightgray")
+          //remove choropleth
+          svg
+            .transition()
+            .duration(300)
+            .selectAll(".state")
+            .style("fill", "#f5f2f0")
+            .style("stroke", "lightgray")
 
-        //adding bubble
-        svg
-          .append("g")
-          .attr("class", "bubble")
-          .selectAll("circle")
-          .data(uState.features)
-          .enter()
-          .append("circle")
-          .attr("id", "bubblemap")
-          .transition()
-          .duration(300)
-          .attr("transform", function (d) {
-            return "translate(" + path.centroid(d) + ")"
-          })
-          .style("fill", function (d) {
-            return gDiffRamp(d[gdiff])
-          })
-          .attr("stroke", "gray")
-          .attr("stroke-width", "0.5px")
-          .attr("r", function (d) {
-            return radius(d.pop2000)
-          })
+          //adding bubble
+          svg
+            .append("g")
+            .attr("class", "bubble")
+            .selectAll("circle")
+            .data(uState.features)
+            .enter()
+            .append("circle")
+            .attr("id", "bubblemap")
+            .transition()
+            .duration(300)
+            .attr("transform", function (d) {
+              return "translate(" + path.centroid(d) + ")"
+            })
+            .style("fill", function (d) {
+              return gDiffRamp(d[gdiff])
+            })
+            .attr("stroke", "gray")
+            .attr("stroke-width", "0.5px")
+            .attr("r", function (d) {
+              return radius(d.pop2000)
+            })
 
+          // update the legend scale
+          // remove the old legend
+          d3.selectAll(".legend").remove()
+
+          var w = 100,
+            h = 480
+          var key = d3
+            .select("#chart")
+            .append("svg")
+            .attr("width", w)
+            .attr("height", h)
+            .attr("class", "legend")
+
+          var legend = key
+            .append("defs")
+            .append("svg:linearGradient")
+            .attr("id", "gradient")
+            .attr("x1", "100%")
+            .attr("y1", "0%")
+            .attr("x2", "100%")
+            .attr("y2", "100%")
+            .attr("spreadMethod", "reflect")
+
+          // adding high bound
+          legend
+            .append("stop")
+            .attr("class", "start")
+            .attr("offset", "0%")
+            //.attr("stop-color",gDiffRamp(gDiffMax))
+            .attr("stop-color", "steelblue")
+            .attr("stop-opacity", 1)
+
+          // adding middle point
+          legend
+            .append("stop")
+            .attr("offset", "50%")
+            .attr("stop-color", "white")
+            .attr("stop-opacity", 1)
+
+          // adding low bound
+          legend
+            .append("stop")
+            .attr("class", "end")
+            .attr("offset", "100%")
+            .attr("stop-color", "orange")
+            //.attr("stop-color", gDiffRamp(gDiffMin - 0.001))
+            .attr("stop-opacity", 1)
+
+          // legend
+          //   .append("text")
+          //   .attr("text-anchor","middle")
+          //   .attr('font-size','10pt')
+          //   .attr('color','darkgray')
+          //   .text("gender difference")
+
+          key
+            .append("rect")
+            .attr("width", w - 80)
+            .attr("height", h + 10)
+            .style("fill", "url(#gradient)")
+            .attr("transform", "translate(0,0)")
+
+          key
+            .append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(25,0)")
+            .call(yAxisgDiff)
+        }
+      }
+      function revertMap() {
         // update the legend scale
         // remove the old legend
         d3.selectAll(".legend").remove()
 
+        // remove the bubbles
+        d3.selectAll("#bubblemap").remove()
+
+        // revert the legend
         var w = 100,
           h = 480
         var key = d3
@@ -239,155 +313,87 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("y1", "0%")
           .attr("x2", "100%")
           .attr("y2", "100%")
-          .attr("spreadMethod", "reflect")
+          .attr("spreadMethod", "pad")
 
         // adding high bound
         legend
           .append("stop")
-          .attr("class", "start")
           .attr("offset", "0%")
-          //.attr("stop-color",gDiffRamp(gDiffMax))
-          .attr("stop-color", "steelblue")
-          .attr("stop-opacity", 1)
-
-        // adding middle point
-        legend
-          .append("stop")
-          .attr("offset", "50%")
-          .attr("stop-color", "white")
+          .attr("stop-color", highColor)
           .attr("stop-opacity", 1)
 
         // adding low bound
         legend
           .append("stop")
-          .attr("class", "end")
           .attr("offset", "100%")
-          .attr("stop-color", "orange")
-          //.attr("stop-color", gDiffRamp(gDiffMin - 0.001))
+          .attr("stop-color", lowColor)
           .attr("stop-opacity", 1)
-
-        // legend
-        //   .append("text")
-        //   .attr("text-anchor","middle")
-        //   .attr('font-size','10pt')
-        //   .attr('color','darkgray')
-        //   .text("gender difference")
 
         key
           .append("rect")
           .attr("width", w - 80)
           .attr("height", h + 10)
           .style("fill", "url(#gradient)")
-          .attr("transform", "translate(0,0)")
+          .attr("transform", "translate(0,10)")
 
         key
           .append("g")
           .attr("class", "y axis")
-          .attr("transform", "translate(25,0)")
-          .call(yAxisgDiff)
+          .attr("transform", "translate(25,10)")
+          .call(yAxis)
 
-        } 
-      }
-      function revertMap(){
-        // update the legend scale
-        // remove the old legend
-        d3.selectAll(".legend").remove()
-
-        // remove the bubbles
-        d3.selectAll("#bubblemap").remove()
-
-        // revert the legend
-        var w = 100,
-        h = 480
-      var key = d3
-        .select("#chart")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h)
-        .attr("class", "legend")
-
-      var legend = key
-        .append("defs")
-        .append("svg:linearGradient")
-        .attr("id", "gradient")
-        .attr("x1", "100%")
-        .attr("y1", "0%")
-        .attr("x2", "100%")
-        .attr("y2", "100%")
-        .attr("spreadMethod", "pad")
-
-      // adding high bound
-      legend
-        .append("stop")
-        .attr("offset", "0%")
-        .attr("stop-color", highColor)
-        .attr("stop-opacity", 1)
-
-      // adding low bound
-      legend
-        .append("stop")
-        .attr("offset", "100%")
-        .attr("stop-color", lowColor)
-        .attr("stop-opacity", 1)
-
-      key
-        .append("rect")
-        .attr("width", w - 80)
-        .attr("height", h + 10)
-        .style("fill", "url(#gradient)")
-        .attr("transform", "translate(0,10)")
-
-      key
-        .append("g")
-        .attr("class", "y axis")
-        .attr("transform", "translate(25,10)")
-        .call(yAxis)
-
-      svg
-        .style("transition", "all 0.2s ease-in-out")
-        .selectAll(".state")
-        .style("stroke", "#666666")
-        .style("fill", function (d) {
-          return ramp(d[theil])
-        })
-
+        svg
+          .style("transition", "all 0.2s ease-in-out")
+          .selectAll(".state")
+          .style("stroke", "#666666")
+          .style("fill", function (d) {
+            return ramp(d[theil])
+          })
       }
 
-      document.getElementById("map_text").addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
-        var st = document.getElementById("map_text").scrollTop
-        //window.pageYOffset || document.getElementById("map_text").scrollTop
-        if (st > lastScrollTop){
-           // downscroll code
-           updateMap();
-           console.log("down");
-        } else {
-           // upscroll code
-           map_update = false;
-           revertMap();
-           console.log("up")
-        }
-        lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-     }, false);
-
+      document.getElementById("map_text").addEventListener(
+        "scroll",
+        function () {
+          // or window.addEventListener("scroll"....
+          var st = document.getElementById("map_text").scrollTop
+          //window.pageYOffset || document.getElementById("map_text").scrollTop
+          if (st > lastScrollTop) {
+            // downscroll code
+            updateMap()
+            console.log("down")
+          } else {
+            // upscroll code
+            map_update = false
+            revertMap()
+            console.log("up")
+          }
+          lastScrollTop = st <= 0 ? 0 : st // For Mobile or negative scrolling
+        },
+        false
+      )
     }
   )
 })
 
-
-document.getElementById("scatter_text").addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
-  var st = document.getElementById("scatter_text").scrollTop
-  //window.pageYOffset || document.getElementById("map_text").scrollTop
-  if (st > lastScrollTop){
-     // downscroll code
-     document.getElementById("linechart").classList.add("opaque")
-     console.log("scatter down");
-  } else {
-     // upscroll code
-     document.getElementById("linechart").classList.remove("opaque")
-     console.log("scatter up")
-  }
-  lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
-}, false);
+document.getElementById("scatter_text").addEventListener(
+  "scroll",
+  function () {
+    // or window.addEventListener("scroll"....
+    var st = document.getElementById("scatter_text").scrollTop
+    //window.pageYOffset || document.getElementById("map_text").scrollTop
+    if (st > lastScrollTop) {
+      // downscroll code
+      document.getElementById("linechart").classList.add("opaque")
+      console.log("scatter down")
+    } else {
+      // upscroll code
+      document.getElementById("linechart").classList.remove("opaque")
+      console.log("scatter up")
+    }
+    lastScrollTop = st <= 0 ? 0 : st // For Mobile or negative scrolling
+  },
+  false
+)
 // //line chart
 // //code from https://www.d3-graph-gallery.com/graph/line_basic.html
 //     // set the dimensions and margins of the graph
@@ -788,7 +794,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   var scale_circle_fracB = d3
     .scaleSqrt()
     .domain([min_fracB, max_fracB])
-    .range([0, 75])
+    .range([0, 115])
 
   // gini scale
   var scale_circle_gini = d3
@@ -800,7 +806,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   var scale_circle_dropout = d3
     .scaleSqrt()
     .domain([min_dropout, max_dropout])
-    .range([0, 75])
+    .range([0, 115])
 
   // violent crime scale
   var scale_circle_crime_violent = d3
@@ -848,9 +854,13 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   // adding circles to the SVGs in each div
 
-  // y locations for two related rows of circles
+  // x and y locations for two related rows of circles
   var circ_y1 = 75
   var circ_y2 = 225
+  var circ_y3 = 125
+
+  var circ_x3 = 125
+  var circ_x4 = 275
 
   var g1 = svgSelection1.append("g").attr("transform", function (d, i) {
     return "translate(0,0)"
@@ -865,14 +875,14 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 75)
+    .attr("cx", circ_x3)
     .attr("cy", circ_y1)
     .attr("r", scale_circle_emp(state1_m_emp))
     .style("fill", "steelblue")
     .append("text")
 
   g1.append("text")
-    .attr("x", 75)
+    .attr("x", circ_x3)
     .attr("y", circ_y1)
     // .attr("stroke", "#fff")
     .attr("text-anchor", "middle")
@@ -889,13 +899,13 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 225)
+    .attr("cx", circ_x4)
     .attr("cy", circ_y1)
     .attr("r", scale_circle_emp(state1_f_emp))
     .style("fill", "steelblue")
 
   g2.append("text")
-    .attr("x", 225)
+    .attr("x", circ_x4)
     .attr("y", circ_y1)
     // .attr("stroke", "#fff")
     .attr("text-anchor", "middle")
@@ -913,14 +923,14 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 75)
+    .attr("cx", circ_x3)
     .attr("cy", circ_y2)
     .attr("r", scale_circle_emp(state2_m_emp))
     .style("fill", "green")
     .append("text")
 
   g3.append("text")
-    .attr("x", 75)
+    .attr("x", circ_x4)
     .attr("y", circ_y2)
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
@@ -936,26 +946,27 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 225)
+    .attr("cx", circ_x4)
     .attr("cy", circ_y2)
     .attr("r", scale_circle_emp(state2_f_emp))
     .style("fill", "green")
 
   g4.append("text")
-    .attr("x", 225)
+    .attr("x", circ_x4)
     .attr("y", circ_y2)
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
     .text("NC Females")
 
   // HS dropout comparison
+
   drop_circle1 = svgSelection2
     // .selectAll("circle")
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 75)
-    .attr("cy", 75)
+    .attr("cx", circ_x3)
+    .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "steelblue")
 
@@ -969,8 +980,8 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 225)
-    .attr("cy", 75)
+    .attr("cx", circ_x4)
+    .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "green")
 
@@ -985,8 +996,8 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 75)
-    .attr("cy", 75)
+    .attr("cx", circ_x3)
+    .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "steelblue")
 
@@ -1000,8 +1011,8 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", 225)
-    .attr("cy", 75)
+    .attr("cx", circ_x4)
+    .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "green")
 
