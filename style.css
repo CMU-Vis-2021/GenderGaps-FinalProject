@@ -94,3 +94,7 @@
       stroke: #000;
       shape-rendering: crispEdges;
   }
+
+  #two_scatterplots{
+    position: absolute;
+  }

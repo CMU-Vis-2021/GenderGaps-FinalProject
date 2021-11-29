@@ -136,3 +136,44 @@ text.label{
     stroke: #000;
     shape-rendering: crispEdges;
 }
+
+#two_scatterplots{
+  display: inline-block;
+  position: relative;
+}
+
+#linechart{
+  position: absolute;
+  transition-duration: 0.5s;
+  background-color: white;
+  
+}
+
+.opaque {
+  opacity: 0;
+}
+
+#scatterplot{
+  position: inherit;
+  background-color: white;
+  top: -480px;
+}
+
+
+#scatterplot_container {
+  height: 600px;
+}
+
+
+#scatter_text {
+  display: inline-block;
+  width: 400px;
+  height: 550px;
+  overflow: scroll;
+  margin-right: 20px;
+
+}
+
+
+
+

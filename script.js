@@ -12,8 +12,8 @@ var map_update = false;
 var lastScrollTop = 0;
 
 // map size
-const width = 730
-const height = 480
+const width = 800
+const height = 500
 const svg = d3
   .select("#chart")
   .append("svg")
@@ -105,7 +105,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             .style("top", d3.event.pageY + "px")
             .text(
               () =>
-                `${d.state_id}'s Theil Index : ${d[theil]}`
+                `${d.state_id}'s Theil Index : ${d[theil]}; Gender Difference : ${d[gdiff]}`
             )
         })
 
@@ -187,36 +187,13 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         if (!map_update){
           map_update = true;
           console.log("updating the map")
-
-        //update graph title
-        document.getElementById("mapTitle").innerHTML = "U.S. States Population Size and Gender Gap";
-
-        //remove choropleth fill
+        //remove choropleth
         svg
           .transition()
           .duration(300)
           .selectAll(".state")
           .style("fill", "#f5f2f0")
           .style("stroke", "lightgray")
-
-        svg.selectAll(".state")
-          .on("mouseover", function (d) {
-            d3.select(this)
-              .style("opacity", 1)
-              .style("fill", "#f5f2f0")
-          })
-
-          .on("mousemove", function (d) {
-            tooltip
-               .transition()
-               .duration(100)
-               .style("opacity", 0)
-               //.text("")
-          })
-  
-          .on("mouseout", function (d, i) {
-            //tooltip.transition().duration(200).style("opacity", 0)
-          })
 
         //adding bubble
         svg
@@ -241,25 +218,6 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             return radius(d.pop2000)
           })
 
-          svg.selectAll("#bubblemap")
-            .on("mouseover", function(d){
-              d3.select(this)
-                  .style("fill", tinycolor(gDifframp(d[gdiff])).darken(25).toString())
-                  .style("cursor", "pointer")
-            })
-            .on("mousemove", function (d) {
-                tooltip
-                  .transition()
-                  .duration(200)
-                  .style("opacity", 0.9)
-                  .style("left", d3.event.pageX + "px")
-                  .style("top", d3.event.pageY + "px")
-                  .text(
-                    () =>
-                      `${d.state_id}'s Gender Difference score: ${d[gdiff]}`
-                  )
-        })
-    
         // update the legend scale
         // remove the old legend
         d3.selectAll(".legend").remove()
@@ -288,6 +246,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr("class", "start")
           .attr("offset", "0%")
+          //.attr("stop-color",gDiffRamp(gDiffMax))
           .attr("stop-color", "steelblue")
           .attr("stop-opacity", 1)
 
@@ -304,6 +263,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("class", "end")
           .attr("offset", "100%")
           .attr("stop-color", "orange")
+          //.attr("stop-color", gDiffRamp(gDiffMin - 0.001))
           .attr("stop-opacity", 1)
 
         // legend
@@ -328,7 +288,6 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
 
         } 
       }
-      //revert the map to choropleth
       function revertMap(){
         // update the legend scale
         // remove the old legend
@@ -337,11 +296,9 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         // remove the bubbles
         d3.selectAll("#bubblemap").remove()
 
-        //revert graph title
-        document.getElementById("mapTitle").innerHTML = "U.S. States Regional Economic Inequality";
-
         // revert the legend
-        var w = 100, h = 480
+        var w = 100,
+        h = 480
       var key = d3
         .select("#chart")
         .append("svg")
@@ -394,38 +351,11 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           return ramp(d[theil])
         })
 
-        .on("mousemove", function (d) {
-          tooltip
-            .transition()
-            .duration(200)
-            .style("opacity", 0.9)
-            .style("left", d3.event.pageX + "px")
-            .style("top", d3.event.pageY + "px")
-            .text(
-              () =>
-                `${d.state_id}'s Theil Index : ${d[theil]}`
-            )
-        })
-
-        .on("mouseover", function (d) {
-          d3.select(this)
-            .style("opacity", 1)
-            .style("fill", tinycolor(ramp(d[theil])).darken(25).toString())
-            .style("cursor", "pointer")
-        })
-
-        .on("mouseout", function (d, i) {
-          d3.selectAll(".state").transition().duration(100).style("opacity", 1)
-          d3.select(this).style("fill", function (d) {
-            return ramp(d[theil])
-          })
-          tooltip.transition().duration(200).style("opacity", 0)
-        })
-
       }
 
       document.getElementById("map_text").addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
-        var st = document.getElementById("map_text").scrollTop//window.pageYOffset || document.getElementById("map_text").scrollTop
+        var st = document.getElementById("map_text").scrollTop
+        //window.pageYOffset || document.getElementById("map_text").scrollTop
         if (st > lastScrollTop){
            // downscroll code
            updateMap();
@@ -443,12 +373,27 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
   )
 })
 
+
+document.getElementById("scatter_text").addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
+  var st = document.getElementById("scatter_text").scrollTop
+  //window.pageYOffset || document.getElementById("map_text").scrollTop
+  if (st > lastScrollTop){
+     // downscroll code
+     document.getElementById("linechart").classList.add("opaque")
+     console.log("scatter down");
+  } else {
+     // upscroll code
+     document.getElementById("linechart").classList.remove("opaque")
+     console.log("scatter up")
+  }
+  lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+}, false);
 // //line chart
 // //code from https://www.d3-graph-gallery.com/graph/line_basic.html
 //     // set the dimensions and margins of the graph
 var margin = { top: 30, right: 30, bottom: 30, left: 60 },
-  Lwidth = 1000 - margin.left - margin.right,
-  Lheight = 600 - margin.top - margin.bottom
+  Lwidth = 730 - margin.left - margin.right,
+  Lheight = 480 - margin.top - margin.bottom
 
 // // append the svg object to the body of the page
 var Lsvg = d3
@@ -461,13 +406,13 @@ var Lsvg = d3
 
 var labelx = "Parent Income Percentile"
 
-// var L2svg = d3
-//   .select("#scatterplot2")
-//   .append("svg")
-//   .attr("width", Lwidth + margin.left + margin.right)
-//   .attr("height", Lheight + margin.top + margin.bottom)
-//   .append("g")
-//   .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+var L2svg = d3
+  .select("#scatterplot2")
+  .append("svg")
+  .attr("width", Lwidth + margin.left + margin.right)
+  .attr("height", Lheight + margin.top + margin.bottom)
+  .append("g")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
 
 // //Read the data
 d3.csv("gender_nat.csv", function (data) {
@@ -609,40 +554,15 @@ d3.csv("gender_nat.csv", function (data) {
     .style("font-size", "15px")
     .attr("alignment-baseline", "middle")
 
-
-//update function
-
-// var inter = setInterval(function() {
-//   updateScatter();
-// }, 5000); 
-
-setTimeout(() => {
-  updateScatter()
-}, 2000)
-
-    function updateScatter(data){
-      console.log("making it into function")
-      // Update our scales
-      // // Add X axis
-  var x = d3.scaleLinear().domain([0, 100]).range([0, Lwidth])
-  Lsvg
-      .selectAll("dot")
-      .transition()
-      .duration(200)
-      .attr("cy", function(d) {
-        return d.w2_pos_30_m;
-      })
-      console.log("data changed")
-
-  Lsvg
-    .select("#linechart")
-    .append("svg")
-    var xAxis = Lsvg.append("g")
+  //scatterplot 2
+  // // Add X axis
+  var x2 = d3.scaleLinear().domain([0, 100]).range([0, Lwidth])
+  L2svg.append("g")
     .attr("transform", "translate(0," + Lheight + ")")
-    .call(d3.axisBottom(x))
+    .call(d3.axisBottom(x2))
 
   // // Add Y axis
-  var y = d3
+  var y2 = d3
     .scaleLinear()
     .domain([
       0.5,
@@ -651,155 +571,92 @@ setTimeout(() => {
       }),
     ])
     .range([Lheight, 0])
-  var yAxis = Lsvg.append("g").call(d3.axisLeft(y))
-    
-      // // Update our axes
-      xAxis.call(d3.axisBottom(x));
-      yAxis.call(d3.axisLeft(y)).transition();
-    
-      // Update our circles
-      var circles = Lsvg.selectAll("circle")
-          .data(data);
-    
-      circles.exit().remove()
-      console.log("circles removed");
-    
-      circles
-          .attr("cx", function(d){ return x(d.par_pctile) })
-          .attr("cy", function(d){ return y(d.w2_pos_30_m) })
-    
-      circles.enter()
-          .append("circle")
-              .attr("cx", function (d) {return x(d.par_pctile)})
-              .attr("cy", function (d) {return y(d.w2_pos_30_f)})
-              .attr("r", 3.5)
-              .attr("fill", "pink");
+  L2svg.append("g").call(d3.axisLeft(y2))
 
-        circles.enter()
-            .append("circle")
-                  .attr("cx", function (d) {return x(d.par_pctile)})
-                  .attr("cy", function (d) {return y(d.w2_pos_30_m)})
-                  .attr("r", 3.5)
-                  .attr("fill", "blue");
+  // Add the scatterplot
 
-      Lsvg.transition().duration(500);
-      console.log("made it to the end");
-    }
+  //female dots added
+  L2svg.selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+    .style("fill", "pink")
+    .attr("r", 3.5)
+    .attr("cx", function (d) {
+      return x2(d.par_pctile)
+    })
+    .attr("cy", function (d) {
+      return y2(d.w2_pos_30_f)
+    })
 
-  
+  //male dots added
+  L2svg.selectAll("dot")
+    .data(data)
+    .enter()
+    .append("circle")
+    .style("fill", "blue")
+    .attr("r", 3.5)
+    .attr("cx", function (d) {
+      return x2(d.par_pctile)
+    })
+    .attr("cy", function (d) {
+      return y2(d.w2_pos_30_m)
+    })
 
-  //scatterplot 2
+  //x axis label
+  L2svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("x", Lwidth - 110)
+    .attr("y", Lheight + 30)
+    .text("Parent Income Percentile")
 
+  //y-axis label
+  L2svg.append("text")
+    .attr("class", "y label")
+    .attr("text-anchor", "end")
+    .attr("y", -60)
+    .attr("x", -120)
+    .attr("dy", ".75em")
+    .attr("transform", "rotate(-90)")
+    .text("Percent(decimal) employed")
 
+  //chart title label
+  L2svg.append("text")
+    .attr("class", "x label")
+    .attr("text-anchor", "end")
+    .attr("y", Lheight - 560)
+    .attr("x", Lwidth - 190)
+    .text(
+      "Percent Employed of 30 year olds from Varying Parent Income Percentiles"
+    )
 
+  L2svg.append("circle")
+    .attr("cx", 20)
+    .attr("cy", -20)
+    .attr("r", 6)
+    .style("fill", "blue")
 
-  // function updateScatter(data){
-  //   // // Add X axis
-  //   var x2 = d3.scaleLinear().domain([0, 100]).range([0, Lwidth])
-  //   L2svg.append("g")
-  //     .attr("transform", "translate(0," + Lheight + ")")
-  //     .call(d3.axisBottom(x2))
-  
-  //   // // Add Y axis
-  //   var y2 = d3
-  //     .scaleLinear()
-  //     .domain([
-  //       0.5,
-  //       d3.max(data, function (d) {
-  //         return +d.w2_pos_30_m
-  //       }),
-  //     ])
-  //     .range([Lheight, 0])
-  //   L2svg.append("g").call(d3.axisLeft(y2))
-  
-  //   // Add the scatterplot
-  
-  //   //female dots added
-  //   L2svg.selectAll("dot")
-  //     .data(data)
-  //     .enter()
-  //     .append("circle")
-  //     .style("fill", "pink")
-  //     .attr("r", 3.5)
-  //     .attr("cx", function (d) {
-  //       return x2(d.par_pctile)
-  //     })
-  //     .attr("cy", function (d) {
-  //       return y2(d.w2_pos_30_f)
-  //     })
-  
-  //   //male dots added
-  //   L2svg.selectAll("dot")
-  //     .data(data)
-  //     .enter()
-  //     .append("circle")
-  //     .style("fill", "blue")
-  //     .attr("r", 3.5)
-  //     .attr("cx", function (d) {
-  //       return x2(d.par_pctile)
-  //     })
-  //     .attr("cy", function (d) {
-  //       return y2(d.w2_pos_30_m)
-  //     })
-  
-  //   //x axis label
-  //   L2svg.append("text")
-  //     .attr("class", "x label")
-  //     .attr("text-anchor", "end")
-  //     .attr("x", Lwidth - 110)
-  //     .attr("y", Lheight + 30)
-  //     .text("Parent Income Percentile")
-  
-  //   //y-axis label
-  //   L2svg.append("text")
-  //     .attr("class", "y label")
-  //     .attr("text-anchor", "end")
-  //     .attr("y", -60)
-  //     .attr("x", -120)
-  //     .attr("dy", ".75em")
-  //     .attr("transform", "rotate(-90)")
-  //     .text("Percent(decimal) employed")
-  
-  //   //chart title label
-  //   L2svg.append("text")
-  //     .attr("class", "x label")
-  //     .attr("text-anchor", "end")
-  //     .attr("y", Lheight - 560)
-  //     .attr("x", Lwidth - 190)
-  //     .text(
-  //       "Percent Employed of 30 year olds from Varying Parent Income Percentiles"
-  //     )
-  
-  //   L2svg.append("circle")
-  //     .attr("cx", 20)
-  //     .attr("cy", -20)
-  //     .attr("r", 6)
-  //     .style("fill", "blue")
-  
-  //   L2svg.append("circle")
-  //     .attr("cx", 20)
-  //     .attr("cy", 10)
-  //     .attr("r", 6)
-  //     .style("fill", "pink")
-  
-  //   L2svg.append("text")
-  //     .attr("x", 40)
-  //     .attr("y", -20)
-  //     .text("Male")
-  //     .style("font-size", "15px")
-  //     .attr("alignment-baseline", "middle")
-  
-  //   L2svg.append("text")
-  //     .attr("x", 40)
-  //     .attr("y", 10)
-  //     .text("Female")
-  //     .style("font-size", "15px")
-  //     .attr("alignment-baseline", "middle")
-  //   }
+  L2svg.append("circle")
+    .attr("cx", 20)
+    .attr("cy", 10)
+    .attr("r", 6)
+    .style("fill", "pink")
+
+  L2svg.append("text")
+    .attr("x", 40)
+    .attr("y", -20)
+    .text("Male")
+    .style("font-size", "15px")
+    .attr("alignment-baseline", "middle")
+
+  L2svg.append("text")
+    .attr("x", 40)
+    .attr("y", 10)
+    .text("Female")
+    .style("font-size", "15px")
+    .attr("alignment-baseline", "middle")
 })
-
-
-
 
 // ROB ADDING CIRCLES ----------------------------------------
 
