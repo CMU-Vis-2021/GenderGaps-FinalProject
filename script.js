@@ -930,7 +930,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .append("text")
 
   g3.append("text")
-    .attr("x", circ_x4)
+    .attr("x", circ_x3)
     .attr("y", circ_y2)
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
