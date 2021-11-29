@@ -7,8 +7,13 @@ let fetchData = async () => {
   return response.json()
 }
 
-const width = 800
-const height = 500
+var map_update = false;
+// scroll detect 
+var lastScrollTop = 0;
+
+// map size
+const width = 730
+const height = 480
 const svg = d3
   .select("#chart")
   .append("svg")
@@ -100,7 +105,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             .style("top", d3.event.pageY + "px")
             .text(
               () =>
-                `${d.state_id}'s Theil Index : ${d[theil]}; Gender Difference : ${d[gdiff]}`
+                `${d.state_id}'s Theil Index : ${d[theil]}`
             )
         })
 
@@ -164,7 +169,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
       var ydDiff = d3
         .scaleLinear()
         .range([h, 0])
-        .domain([gDiffMin - 0.02, gDiffMax])
+        .domain([gDiffMin - 0.03, gDiffMax])
 
       var yAxis = d3.axisRight(y)
       var yAxisgDiff = d3.axisRight(ydDiff)
@@ -179,13 +184,39 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
       var radius = d3.scaleSqrt().domain([0, 1e6]).range([0, 6])
 
       function updateMap() {
-        //remove choropleth
+        if (!map_update){
+          map_update = true;
+          console.log("updating the map")
+
+        //update graph title
+        document.getElementById("mapTitle").innerHTML = "U.S. States Population Size and Gender Gap";
+
+        //remove choropleth fill
         svg
           .transition()
           .duration(300)
           .selectAll(".state")
           .style("fill", "#f5f2f0")
           .style("stroke", "lightgray")
+
+        svg.selectAll(".state")
+          .on("mouseover", function (d) {
+            d3.select(this)
+              .style("opacity", 1)
+              .style("fill", "#f5f2f0")
+          })
+
+          .on("mousemove", function (d) {
+            tooltip
+               .transition()
+               .duration(100)
+               .style("opacity", 0)
+               //.text("")
+          })
+  
+          .on("mouseout", function (d, i) {
+            //tooltip.transition().duration(200).style("opacity", 0)
+          })
 
         //adding bubble
         svg
@@ -210,6 +241,25 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             return radius(d.pop2000)
           })
 
+          svg.selectAll("#bubblemap")
+            .on("mouseover", function(d){
+              d3.select(this)
+                  .style("fill", tinycolor(gDifframp(d[gdiff])).darken(25).toString())
+                  .style("cursor", "pointer")
+            })
+            .on("mousemove", function (d) {
+                tooltip
+                  .transition()
+                  .duration(200)
+                  .style("opacity", 0.9)
+                  .style("left", d3.event.pageX + "px")
+                  .style("top", d3.event.pageY + "px")
+                  .text(
+                    () =>
+                      `${d.state_id}'s Gender Difference score: ${d[gdiff]}`
+                  )
+        })
+    
         // update the legend scale
         // remove the old legend
         d3.selectAll(".legend").remove()
@@ -238,7 +288,6 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .append("stop")
           .attr("class", "start")
           .attr("offset", "0%")
-          //.attr("stop-color",gDiffRamp(gDiffMax))
           .attr("stop-color", "steelblue")
           .attr("stop-opacity", 1)
 
@@ -255,7 +304,6 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("class", "end")
           .attr("offset", "100%")
           .attr("stop-color", "orange")
-          //.attr("stop-color", gDiffRamp(gDiffMin - 0.001))
           .attr("stop-opacity", 1)
 
         // legend
@@ -277,40 +325,120 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .attr("class", "y axis")
           .attr("transform", "translate(25,0)")
           .call(yAxisgDiff)
+
+        } 
+      }
+      //revert the map to choropleth
+      function revertMap(){
+        // update the legend scale
+        // remove the old legend
+        d3.selectAll(".legend").remove()
+
+        // remove the bubbles
+        d3.selectAll("#bubblemap").remove()
+
+        //revert graph title
+        document.getElementById("mapTitle").innerHTML = "U.S. States Regional Economic Inequality";
+
+        // revert the legend
+        var w = 100, h = 480
+      var key = d3
+        .select("#chart")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h)
+        .attr("class", "legend")
+
+      var legend = key
+        .append("defs")
+        .append("svg:linearGradient")
+        .attr("id", "gradient")
+        .attr("x1", "100%")
+        .attr("y1", "0%")
+        .attr("x2", "100%")
+        .attr("y2", "100%")
+        .attr("spreadMethod", "pad")
+
+      // adding high bound
+      legend
+        .append("stop")
+        .attr("offset", "0%")
+        .attr("stop-color", highColor)
+        .attr("stop-opacity", 1)
+
+      // adding low bound
+      legend
+        .append("stop")
+        .attr("offset", "100%")
+        .attr("stop-color", lowColor)
+        .attr("stop-opacity", 1)
+
+      key
+        .append("rect")
+        .attr("width", w - 80)
+        .attr("height", h + 10)
+        .style("fill", "url(#gradient)")
+        .attr("transform", "translate(0,10)")
+
+      key
+        .append("g")
+        .attr("class", "y axis")
+        .attr("transform", "translate(25,10)")
+        .call(yAxis)
+
+      svg
+        .style("transition", "all 0.2s ease-in-out")
+        .selectAll(".state")
+        .style("stroke", "#666666")
+        .style("fill", function (d) {
+          return ramp(d[theil])
+        })
+
+        .on("mousemove", function (d) {
+          tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0.9)
+            .style("left", d3.event.pageX + "px")
+            .style("top", d3.event.pageY + "px")
+            .text(
+              () =>
+                `${d.state_id}'s Theil Index : ${d[theil]}`
+            )
+        })
+
+        .on("mouseover", function (d) {
+          d3.select(this)
+            .style("opacity", 1)
+            .style("fill", tinycolor(ramp(d[theil])).darken(25).toString())
+            .style("cursor", "pointer")
+        })
+
+        .on("mouseout", function (d, i) {
+          d3.selectAll(".state").transition().duration(100).style("opacity", 1)
+          d3.select(this).style("fill", function (d) {
+            return ramp(d[theil])
+          })
+          tooltip.transition().duration(200).style("opacity", 0)
+        })
+
       }
 
-      // call the transition
-      console.log("before")
+      document.getElementById("map_text").addEventListener("scroll", function(){ // or window.addEventListener("scroll"....
+        var st = document.getElementById("map_text").scrollTop//window.pageYOffset || document.getElementById("map_text").scrollTop
+        if (st > lastScrollTop){
+           // downscroll code
+           updateMap();
+           console.log("down");
+        } else {
+           // upscroll code
+           map_update = false;
+           revertMap();
+           console.log("up")
+        }
+        lastScrollTop = st <= 0 ? 0 : st; // For Mobile or negative scrolling
+     }, false);
 
-      // window.onscroll = function() {
-      //   console.log("on scroll");
-      //   updateMap()
-      //   return
-      // };
-      //document.getElementById("vis").addEventListener("scroll", updateMap);
-
-      setTimeout(() => {
-        console.log("after 2 sec call update function")
-        updateMap()
-      }, 2000)
-
-      //state abbr
-      // svg.selectAll("text")
-      //     .data(uState.features)
-      //     .enter()
-      //     .append("svg:text")
-      //     .text(function(d){
-      //         return d.state_id;
-      //     })
-      //     .attr("x", function(d){
-      //         return path.centroid(d)[0];
-      //     })
-      //     .attr("y", function(d){
-      //         return  path.centroid(d)[1];
-      //     })
-      //     .attr("text-anchor","middle")
-      //     .attr('font-size','6pt')
-      //     .attr('color','darkgray')
     }
   )
 })

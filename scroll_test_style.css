@@ -1,23 +1,59 @@
-/* Team's original CSS from style.css on 11/24 5PM (separate from borrowed template CSS lower in this doc) */
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: black;
+h1, h2, h3, h4, h5, h6 {
+  color: rgba(41, 41, 41, 1);
+  font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-path {
+h1 {
+  text-transform: capitalize;
+  font-size: 46px;
+  max-width: 60vw;
+  color: rgba(41, 41, 41, 1);
+  font-weight: 700;
+}
+
+h5{
+  color: #757575;
+  font-weight: 400;
+  line-height: 20px;
+  font-size: 14px;
+  word-break: break-all;
+}
+
+h3{
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: 0;
+  font-weight: 500;
+  margin-top: 1.72em;
+}
+
+#map_container {
+  height: 600px;
+}
+
+#vis {
+  display: inline-block;
+}
+
+#map_text {
+  display: inline-block;
+  width: 400px;
+  height: 550px;
+  overflow: scroll;
+  margin-right: 20px;
+
+}
+
+.path {
   stroke: black;
-  stroke-width: 0.5px;
+  stroke-width: 2;
   fill: black;
 }
 
 .state {
   stroke-width: 1;
-  stroke: #777777;
 }
 
 .state:hover {
@@ -45,23 +81,28 @@ path {
 }
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: sohne, "Helvetica Neue", Helvetica, Arial, sans-serif;
   padding: 10px;
+  margin: 20px;
 }
 
-p {
-  color: #777777;
-  font-size: 14px;
+p{
+  color: rgba(41, 41, 41, 1);
+  font-size: 18px;
+  letter-spacing: -0.003em;
+  font-family: charter, Georgia, Cambria, "Times New Roman", Times, serif;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 28px;
 }
 
-h4 {
-  font-weight: 600;
+h4{
+  font-weight: 500;
+  font-size: 18px;
 }
 
-h5 {
-  font-weight: 400;
+#chart{
+  margin-left: 20px;
+  padding-bottom: 30px;
 }
 
 div.tooltip {
@@ -71,13 +112,13 @@ div.tooltip {
   min-height: 30px;
   padding: 8px 12px;
   font: 12px sans-serif;
-  background: white;
+  background:white;
   border: 0px;
   border-radius: 5px;
   pointer-events: none;
 }
 
-text.label {
+text.label{
   font-size: 12px;
   width: 200px;
 }
@@ -87,85 +128,11 @@ text.label {
 }
 
 .axis text {
-  font: 12px sans-serif;
+    font: 12px sans-serif;
 }
 
-.axis line,
-.axis path {
-  fill: none;
-  stroke: #000;
-  shape-rendering: crispEdges;
-}
-
-/* Borrowed template CSS added by Rob */
-
-.container {
-  width: 890px;
-}
-
-#graphic {
-  padding-top: 60px;
-}
-
-#sections {
-  position: relative;
-  display: inline-block;
-  width: 250px;
-  top: 0px;
-  z-index: 90;
-  padding-bottom: 200px;
-}
-
-.step {
-  margin-bottom: 200px;
-  font-family: "TiemposTextWeb-Regular", "Georgia";
-  font-size: 16px;
-  line-height: 23px;
-  color: #767678;
-}
-
-#sections .title {
-  font-family: Arial, Helvetica, "san-serif";
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 2px;
-  color: #262626;
-  line-height: 1.2em;
-}
-
-#extra-space {
-  height: 300px;
-}
-
-#vis {
-  display: inline-block;
-  position: fixed;
-  top: 60px;
-  z-index: 1;
-  margin-left: 0;
-  /* height: 600px; */
-  /* width: 600px; */
-  /* background-color: #ddd; */
-}
-
-#vis .title {
-  font-size: 120px;
-  text-anchor: middle;
-}
-
-#vis .sub-title {
-  font-size: 80px;
-  text-anchor: middle;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: #666;
-  shape-rendering: crispEdges;
-}
-
-.highlight {
-  fill: #008080;
-  font-weight: bold;
+.axis line, .axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
