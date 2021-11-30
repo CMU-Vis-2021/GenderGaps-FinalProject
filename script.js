@@ -1103,7 +1103,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
           .attr("r", scale_circle_fracB(state1_fracB))
         race_circle2
           .transition()
-          .duration(3000)
+          .duration(1500)
           .attr("r", scale_circle_fracB(state2_fracB))
         console.log("race circle down")
       } else {
