@@ -1004,9 +1004,11 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .attr("dy", "0.35em")
     .text("NC males")
 
-  var g4 = svgSelection1.append("g").attr("transform", function (d, i) {
-    return "translate(0,0)"
-  })
+  var g4 = svgSelection1.append("g")
+
+  // var g4 = svgSelection1.append("g").attr("transform", function (d, i) {
+  //   return "translate(0,0)"
+  // })
 
   g4
     // svgSelection1
@@ -1028,6 +1030,8 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   // HS dropout comparison
 
+  var drop_labels = svgSelection2.append("g")
+
   drop_circle1 = svgSelection2
     // .selectAll("circle")
     // .data(test_radius)
@@ -1037,6 +1041,29 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "steelblue")
+
+  drop_circle2 = svgSelection2
+    .append("circle")
+    .attr("cx", circ_x4)
+    .attr("cy", circ_y3)
+    .attr("r", 15)
+    .style("fill", "green")
+
+  drop_labels
+    .append("text")
+    .attr("x", circ_x3)
+    .attr("y", circ_y2)
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text("NY")
+
+  drop_labels
+    .append("text")
+    .attr("x", circ_x4)
+    .attr("y", circ_y2)
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text("NC")
 
   // dropout circles change at scroll
   document.getElementById("dropout").addEventListener(
@@ -1069,12 +1096,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     false
   )
 
-  drop_circle2 = svgSelection2
-    .append("circle")
-    .attr("cx", circ_x4)
-    .attr("cy", circ_y3)
-    .attr("r", 15)
-    .style("fill", "green")
+  var frac_labels = svgSelection3.append("g")
 
   // percentage black population
   race_circle1 = svgSelection3
@@ -1090,6 +1112,24 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "green")
+
+  // circle labels
+
+  frac_labels
+    .append("text")
+    .attr("x", circ_x3)
+    .attr("y", circ_y2)
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text("NY")
+
+  frac_labels
+    .append("text")
+    .attr("x", circ_x4)
+    .attr("y", circ_y2)
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text("NC")
 
   document.getElementById("pop_black").addEventListener(
     "scroll",
