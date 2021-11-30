@@ -168,9 +168,10 @@ text.label {
 }
 
 #scatter_text {
+  margin-bottom:120px;
   display: inline-block;
   width: 400px;
-  height: 550px;
+  height: 260px;
   overflow: scroll;
   margin-right: 20px;
 }
