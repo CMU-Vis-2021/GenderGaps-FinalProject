@@ -103,10 +103,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             .style("opacity", 0.9)
             .style("left", d3.event.pageX + "px")
             .style("top", d3.event.pageY + "px")
-            .text(
-              () =>
-                `${d.state_id}'s Theil Index : ${d[theil]}`
-            )
+            .text(() => `${d.state_id}'s Theil Index : ${d[theil]}`)
         })
 
         .on("mouseover", function (d) {
@@ -189,7 +186,8 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           console.log("updating the map")
 
           //update graph title
-          document.getElementById("mapTitle").innerHTML = "U.S. States Population Size and Gender Gap";
+          document.getElementById("mapTitle").innerHTML =
+            "U.S. States Population Size and Gender Gap"
           //remove choropleth
           svg
             .transition()
@@ -197,25 +195,21 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             .selectAll(".state")
             .style("fill", "#f5f2f0")
             .style("stroke", "lightgray")
-          
-          svg.selectAll(".state")
-          .on("mouseover", function (d) {
-            d3.select(this)
-              .style("opacity", 1)
-              .style("fill", "#f5f2f0")
-          })
 
-          .on("mousemove", function (d) {
-            tooltip
-               .transition()
-               .duration(100)
-               .style("opacity", 0)
-               //.text("")
-          })
+          svg
+            .selectAll(".state")
+            .on("mouseover", function (d) {
+              d3.select(this).style("opacity", 1).style("fill", "#f5f2f0")
+            })
 
-          .on("mouseout", function (d, i) {
-            //tooltip.transition().duration(200).style("opacity", 0)
-          })
+            .on("mousemove", function (d) {
+              tooltip.transition().duration(100).style("opacity", 0)
+              //.text("")
+            })
+
+            .on("mouseout", function (d, i) {
+              //tooltip.transition().duration(200).style("opacity", 0)
+            })
 
           //adding bubble
           svg
@@ -240,24 +234,27 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
               return radius(d.pop2000)
             })
 
-            svg.selectAll("#bubblemap")
-            .on("mouseover", function(d){
+          svg
+            .selectAll("#bubblemap")
+            .on("mouseover", function (d) {
               d3.select(this)
-                  .style("fill", tinycolor(gDifframp(d[gdiff])).darken(25).toString())
-                  .style("cursor", "pointer")
+                .style(
+                  "fill",
+                  tinycolor(gDifframp(d[gdiff])).darken(25).toString()
+                )
+                .style("cursor", "pointer")
             })
             .on("mousemove", function (d) {
-                tooltip
-                  .transition()
-                  .duration(200)
-                  .style("opacity", 0.9)
-                  .style("left", d3.event.pageX + "px")
-                  .style("top", d3.event.pageY + "px")
-                  .text(
-                    () =>
-                      `${d.state_id}'s Gender Difference score: ${d[gdiff]}`
-                  )
-        })
+              tooltip
+                .transition()
+                .duration(200)
+                .style("opacity", 0.9)
+                .style("left", d3.event.pageX + "px")
+                .style("top", d3.event.pageY + "px")
+                .text(
+                  () => `${d.state_id}'s Gender Difference score: ${d[gdiff]}`
+                )
+            })
 
           // update the legend scale
           // remove the old legend
@@ -336,7 +333,8 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
         // remove the bubbles
         d3.selectAll("#bubblemap").remove()
 
-        document.getElementById("mapTitle").innerHTML = "U.S. States Regional Economic Inequality";
+        document.getElementById("mapTitle").innerHTML =
+          "U.S. States Regional Economic Inequality"
         // revert the legend
         var w = 100,
           h = 480
@@ -399,21 +397,21 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
               .style("opacity", 0.9)
               .style("left", d3.event.pageX + "px")
               .style("top", d3.event.pageY + "px")
-              .text(
-                () =>
-                  `${d.state_id}'s Theil Index : ${d[theil]}`
-              )
+              .text(() => `${d.state_id}'s Theil Index : ${d[theil]}`)
           })
-  
+
           .on("mouseover", function (d) {
             d3.select(this)
               .style("opacity", 1)
               .style("fill", tinycolor(ramp(d[theil])).darken(25).toString())
               .style("cursor", "pointer")
           })
-  
+
           .on("mouseout", function (d, i) {
-            d3.selectAll(".state").transition().duration(100).style("opacity", 1)
+            d3.selectAll(".state")
+              .transition()
+              .duration(100)
+              .style("opacity", 1)
             d3.select(this).style("fill", function (d) {
               return ramp(d[theil])
             })
@@ -1040,54 +1038,82 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     .attr("r", 15)
     .style("fill", "steelblue")
 
-  drop_circle1
-    .transition()
-    .duration(2000)
-    .attr("r", scale_circle_dropout(state1_dropout))
+  // dropout circles change at scroll
+  document.getElementById("dropout").addEventListener(
+    "scroll",
+    function () {
+      var st = document.getElementById("dropout").scrollTop
+      if (st > lastScrollTop) {
+        // downscroll code
+        // document.getElementById("linechart").classList.add("opaque")
+        drop_circle1
+          .transition()
+          .duration(1500)
+          .attr("r", scale_circle_dropout(state1_dropout))
+
+        drop_circle2
+          .transition()
+          .duration(1500)
+          .attr("r", scale_circle_dropout(state2_dropout))
+        console.log("dropout circle down")
+      } else {
+        // upscroll code
+        // document.getElementById("linechart").classList.remove("opaque")
+        drop_circle1.transition().duration(1500).attr("r", 15)
+
+        drop_circle2.transition().duration(1500).attr("r", 15)
+        console.log("dropout circle up")
+      }
+      lastScrollTop = st <= 0 ? 0 : st // For Mobile or negative scrolling
+    },
+    false
+  )
 
   drop_circle2 = svgSelection2
-    // .selectAll("circle")
-    // .data(test_radius)
-    // .enter()
     .append("circle")
     .attr("cx", circ_x4)
     .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "green")
 
-  drop_circle2
-    .transition()
-    .duration(3000)
-    .attr("r", scale_circle_dropout(state2_dropout))
-
   // percentage black population
   race_circle1 = svgSelection3
-    // .selectAll("circle")
-    // .data(test_radius)
-    // .enter()
     .append("circle")
     .attr("cx", circ_x3)
     .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "steelblue")
 
-  race_circle1
-    .transition()
-    .duration(2000)
-    .attr("r", scale_circle_fracB(state1_fracB))
-
   race_circle2 = svgSelection3
-    // .selectAll("circle")
-    // .data(test_radius)
-    // .enter()
     .append("circle")
     .attr("cx", circ_x4)
     .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "green")
 
-  race_circle2
-    .transition()
-    .duration(3000)
-    .attr("r", scale_circle_fracB(state2_fracB))
+  document.getElementById("pop_black").addEventListener(
+    "scroll",
+    function () {
+      var st = document.getElementById("pop_black").scrollTop
+      if (st > lastScrollTop) {
+        // downscroll code
+        race_circle1
+          .transition()
+          .duration(1500)
+          .attr("r", scale_circle_fracB(state1_fracB))
+        race_circle2
+          .transition()
+          .duration(3000)
+          .attr("r", scale_circle_fracB(state2_fracB))
+        console.log("race circle down")
+      } else {
+        // upscroll code
+        race_circle1.transition().duration(1500).attr("r", 15)
+        race_circle2.transition().duration(1500).attr("r", 15)
+        console.log("race circle up")
+      }
+      lastScrollTop = st <= 0 ? 0 : st // For Mobile or negative scrolling
+    },
+    false
+  )
 })
