@@ -105,7 +105,7 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             .style("top", d3.event.pageY + "px")
             .text(
               () =>
-                `${d.state_id}'s Theil Index : ${d[theil]}; Gender Difference : ${d[gdiff]}`
+                `${d.state_id}'s Theil Index : ${d[theil]}`
             )
         })
 
@@ -194,6 +194,25 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             .selectAll(".state")
             .style("fill", "#f5f2f0")
             .style("stroke", "lightgray")
+          
+          svg.selectAll(".state")
+          .on("mouseover", function (d) {
+            d3.select(this)
+              .style("opacity", 1)
+              .style("fill", "#f5f2f0")
+          })
+
+          .on("mousemove", function (d) {
+            tooltip
+               .transition()
+               .duration(100)
+               .style("opacity", 0)
+               //.text("")
+          })
+
+          .on("mouseout", function (d, i) {
+            //tooltip.transition().duration(200).style("opacity", 0)
+          })
 
           //adding bubble
           svg
@@ -217,6 +236,25 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
             .attr("r", function (d) {
               return radius(d.pop2000)
             })
+
+            svg.selectAll("#bubblemap")
+            .on("mouseover", function(d){
+              d3.select(this)
+                  .style("fill", tinycolor(gDifframp(d[gdiff])).darken(25).toString())
+                  .style("cursor", "pointer")
+            })
+            .on("mousemove", function (d) {
+                tooltip
+                  .transition()
+                  .duration(200)
+                  .style("opacity", 0.9)
+                  .style("left", d3.event.pageX + "px")
+                  .style("top", d3.event.pageY + "px")
+                  .text(
+                    () =>
+                      `${d.state_id}'s Gender Difference score: ${d[gdiff]}`
+                  )
+        })
 
           // update the legend scale
           // remove the old legend
@@ -348,6 +386,34 @@ d3.csv("bystate_fromcz_avgs.csv", function (data) {
           .style("stroke", "#666666")
           .style("fill", function (d) {
             return ramp(d[theil])
+          })
+
+          .on("mousemove", function (d) {
+            tooltip
+              .transition()
+              .duration(200)
+              .style("opacity", 0.9)
+              .style("left", d3.event.pageX + "px")
+              .style("top", d3.event.pageY + "px")
+              .text(
+                () =>
+                  `${d.state_id}'s Theil Index : ${d[theil]}`
+              )
+          })
+  
+          .on("mouseover", function (d) {
+            d3.select(this)
+              .style("opacity", 1)
+              .style("fill", tinycolor(ramp(d[theil])).darken(25).toString())
+              .style("cursor", "pointer")
+          })
+  
+          .on("mouseout", function (d, i) {
+            d3.selectAll(".state").transition().duration(100).style("opacity", 1)
+            d3.select(this).style("fill", function (d) {
+              return ramp(d[theil])
+            })
+            tooltip.transition().duration(200).style("opacity", 0)
           })
       }
 
