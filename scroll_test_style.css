@@ -43,9 +43,10 @@ h3 {
 }
 
 #map_text {
+  padding-bottom: 200px;
   display: inline-block;
   width: 400px;
-  height: 550px;
+  height: 150px;
   overflow: scroll;
   margin-right: 20px;
 }
