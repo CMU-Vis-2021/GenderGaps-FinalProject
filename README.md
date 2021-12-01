@@ -18,8 +18,6 @@ The gender pay gap is a well known phenomenon in the modern world. The trend is 
 ## Link to Video
 [Project Video]()
 
-## Viewing Instructions
-
 ## Link to Article 
 [Childhood Environment And Gender Gaps In Adulthood](https://cmu-vis-2021.github.io/GenderGaps-FinalProject/)
 
