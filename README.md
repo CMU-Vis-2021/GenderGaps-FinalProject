@@ -29,3 +29,4 @@ The gender pay gap is a well known phenomenon in the modern world. The trend is 
 - Priya Jain: creating the scatterplot (second section of the article)
 - Rob Lambeth: creating the case study (last section of the article)
 - Tammy Zhou: creating the choropleth and bubble map (first section of the article)
+It was a unique learning experience for all of us coming from non-technical backgrounds to collaborate on this project. We were all new to D3 and collaborative work on github. We learned how to work effectively and help each other out by sharing resources and work in pairs to run debugging sessions. We also received a lot of help and support from the instructors and TA of this class :)
