@@ -763,6 +763,9 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   var state1_m_emp = data[32].w2_pos_30_q1_m
   var state2_m_emp = data[33].w2_pos_30_q1_m
 
+  console.log("test" + state2_m_emp)
+  console.log("test" + state1_m_emp)
+
   var state1_f_emp = data[32].w2_pos_30_q1_f
   var state2_f_emp = data[33].w2_pos_30_q1_f
 
@@ -821,17 +824,22 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   let max_w2_pos_30_q1_m = d3.max(data, function (d, i) {
     return d[w2_pos_30_q1_m]
   })
-  let min_w2_pos_30_q1_m = d3.min(data, function (d, i) {
-    return d[w2_pos_30_q1_m]
-  })
+  // let min_w2_pos_30_q1_m = d3.min(data, function (d, i) {
+  //   return d[w2_pos_30_q1_m]
+  // })
+
+  let min_w2_pos_30_q1_m = 0.5
+  console.log("test3" + " " + min_w2_pos_30_q1_m)
 
   // employment rate min max female
   let max_w2_pos_30_q1_f = d3.max(data, function (d, i) {
     return d[w2_pos_30_q1_f]
   })
-  let min_w2_pos_30_q1_f = d3.min(data, function (d, i) {
-    return d[w2_pos_30_q1_f]
-  })
+  // let min_w2_pos_30_q1_f = d3.min(data, function (d, i) {
+  //   return d[w2_pos_30_q1_f]
+  // })
+
+  let min_w2_pos_30_q1_f = 0.5
 
   // fraction black residents
   let max_fracB = d3.max(data, function (d, i) {
@@ -847,13 +855,13 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   var scale_circle_emp_m = d3
     .scaleSqrt()
     .domain([min_w2_pos_30_q1_m, max_w2_pos_30_q1_m])
-    .range([0, 75])
+    .range([0, 115])
 
   // employment rate scale female
   var scale_circle_emp_f = d3
     .scaleSqrt()
     .domain([min_w2_pos_30_q1_f, max_w2_pos_30_q1_f])
-    .range([0, 75])
+    .range([0, 115])
 
   // alt employment rate scale (for both m and f)
   var scale_circle_emp = d3.scaleSqrt().domain([0, 1]).range([0, 80])
@@ -903,7 +911,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
   var svgSelection1 = divSelection1
     .append("svg")
     .attr("width", 600)
-    .attr("height", 300)
+    .attr("height", 400)
 
   var svgSelection2 = divSelection2
     .append("svg")
@@ -944,14 +952,14 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .enter()
     .append("circle")
     .attr("cx", circ_x3)
-    .attr("cy", circ_y1)
-    .attr("r", scale_circle_emp(state1_m_emp))
+    .attr("cy", circ_y1 + 50)
+    .attr("r", scale_circle_emp_m(state1_m_emp))
     .style("fill", "steelblue")
     .append("text")
 
   g1.append("text")
     .attr("x", circ_x3)
-    .attr("y", circ_y1)
+    .attr("y", circ_y1 + 50)
     // .attr("stroke", "#fff")
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
@@ -967,14 +975,14 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", circ_x4)
-    .attr("cy", circ_y1)
-    .attr("r", scale_circle_emp(state1_f_emp))
+    .attr("cx", circ_x4 + 35)
+    .attr("cy", circ_y1 + 50)
+    .attr("r", scale_circle_emp_f(state1_f_emp))
     .style("fill", "steelblue")
 
   g2.append("text")
-    .attr("x", circ_x4)
-    .attr("y", circ_y1)
+    .attr("x", circ_x4 + 35)
+    .attr("y", circ_y1 + 50)
     // .attr("stroke", "#fff")
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
@@ -992,14 +1000,14 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .enter()
     .append("circle")
     .attr("cx", circ_x3)
-    .attr("cy", circ_y2)
-    .attr("r", scale_circle_emp(state2_m_emp))
+    .attr("cy", circ_y2 + 80)
+    .attr("r", scale_circle_emp_m(state2_m_emp))
     .style("fill", "green")
     .append("text")
 
   g3.append("text")
     .attr("x", circ_x3)
-    .attr("y", circ_y2)
+    .attr("y", circ_y2 + 80)
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
     .text("NC males")
@@ -1016,14 +1024,14 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
     // .data(test_radius)
     // .enter()
     .append("circle")
-    .attr("cx", circ_x4)
-    .attr("cy", circ_y2)
-    .attr("r", scale_circle_emp(state2_f_emp))
+    .attr("cx", circ_x4 + 35)
+    .attr("cy", circ_y2 + 80)
+    .attr("r", scale_circle_emp_f(state2_f_emp))
     .style("fill", "green")
 
   g4.append("text")
-    .attr("x", circ_x4)
-    .attr("y", circ_y2)
+    .attr("x", circ_x4 + 35)
+    .attr("y", circ_y2 + 80)
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
     .text("NC Females")
@@ -1044,7 +1052,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   drop_circle2 = svgSelection2
     .append("circle")
-    .attr("cx", circ_x4)
+    .attr("cx", circ_x4 + 35)
     .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "green")
@@ -1059,7 +1067,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   drop_labels
     .append("text")
-    .attr("x", circ_x4)
+    .attr("x", circ_x4 + 35)
     .attr("y", circ_y2)
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
@@ -1108,7 +1116,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   race_circle2 = svgSelection3
     .append("circle")
-    .attr("cx", circ_x4)
+    .attr("cx", circ_x4 + 35)
     .attr("cy", circ_y3)
     .attr("r", 15)
     .style("fill", "green")
@@ -1125,7 +1133,7 @@ d3.csv("bystate_fromcz_rounded.csv", function (data) {
 
   frac_labels
     .append("text")
-    .attr("x", circ_x4)
+    .attr("x", circ_x4 + 35)
     .attr("y", circ_y2)
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
