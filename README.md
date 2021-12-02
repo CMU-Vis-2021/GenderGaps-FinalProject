@@ -13,7 +13,7 @@ Final Project for Data Vis 2021 - Narrative Data Visualization on childhood envi
 The gender pay gap is a well known phenomenon in the modern world. The trend is generally understood to be that men make more money than women working in the same position. Research shows that there are factors related to childhood environments that shape the gender pay gap certain populations experience in adulthood. These issues of equality have the potential to impact our everyday lives, so we set out to make the results of research in this area more accessible to readers. By choosing the narrative track, we hoped to provide readers with a new way to experience information that was previously locked behind the doors of hard to understand academic journal language. We cleaned up and reformatted the data and added scrollytelling interaction technique to our narratives. The result was an interactive article that engages users to connect with the article content more. The animations also create a more effective impression and emotional impact on the reader. For future work, we hope to add on to readability, responsivenessm and accessibility to furthur refine the interactive article reading experience.
 
 ## Link to Paper
-[Project Report](https://docs.google.com/document/d/1xtL-jqsj_ypj91xaE-AFmDWw3NkJdgZNStv-dCXKXdg/edit?usp=sharing)
+[Project Report](report.md)
 
 ## Link to Video
 [Project Video]()
